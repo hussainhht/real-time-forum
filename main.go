@@ -1,17 +1,19 @@
 package main
 
 import (
-	// "fmt"
 	"fmt"
 	"log"
 	"net/http"
-	"realtime/db"
+	"realtime/backend/db"
 )
 
 func main() {
+	//todo: config information
+	port := ":8080"
+
 	mux := http.NewServeMux()
 
-	db ,err := db.StartDatabase()
+	db, err := db.StartDatabase()
 	if err != nil {
 		log.Println(err)
 	}
@@ -21,10 +23,7 @@ func main() {
 		// fmt.Fprintln(w, "Hello, World!")
 	})
 
-	port := ":8080"
-
 	fmt.Println("Find the best real time forum on http://localhost" + port)
 	http.ListenAndServe(port, mux)
-
 
 }
