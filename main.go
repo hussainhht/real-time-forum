@@ -16,14 +16,19 @@ func main() {
 	db, err := db.StartDatabase()
 	if err != nil {
 		log.Println(err)
+		return
 	}
 	defer db.Close()
 
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		// fmt.Fprintln(w, "Hello, World!")
+		fmt.Fprintln(w, "Hello, World!")
 	})
 
 	fmt.Println("Find the best real time forum on http://localhost" + port)
-	http.ListenAndServe(port, mux)
+	err = http.ListenAndServe(port, mux)
+	if err != nil {
+		log.Println(err)
+		
+	}
 
 }

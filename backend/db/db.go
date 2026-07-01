@@ -1,16 +1,21 @@
 package db
 
 import (
-	"fmt"
-	"path/filepath"
-	"os"
 	"database/sql"
+	"fmt"
+	"os"
+	"path/filepath"
+
 	_ "github.com/mattn/go-sqlite3"
 )
 
 func StartDatabase() (*sql.DB, error) {
-	database, err := sql.Open("sqlite3", "./db/realtime.db") //todo : add the path to the parameters through the config and main
+	DBPath := "./db/realtime.db"
+	dbDir := filepath.Dir(DBPath)
+	os.MkdirAll(dbDir, 0755)
+	database, err := sql.Open("sqlite3", DBPath) //todo : add the path to the parameters through the config and main
 	if err != nil {
+		// fmt.Println("Error opening database:", err)
 		return nil, err
 	}
 
@@ -31,6 +36,7 @@ func StartDatabase() (*sql.DB, error) {
 	err = RunMigrations(database)
 	if err != nil {
 		database.Close()
+		fmt.Println("Error running migrations:", err)
 		return nil, err
 	}
 
@@ -40,25 +46,27 @@ func StartDatabase() (*sql.DB, error) {
 }
 
 func RunMigrations(database *sql.DB) error { //todo: add dir string in the input of function
-	fileNames , err := GetFilesNames("./db/migration")
-	if err != nil{
+	fileNames, err := GetFilesNames("backend/db/migration")
+	if err != nil {
+		fmt.Printf("Error 1111 %s: %v\n", err)
+
 		return err
 	}
 
 	for _, f := range fileNames {
-		fullPath := filepath.Join("./db/migration/"+ f)
+		fullPath := filepath.Join("backend/db/migration/" + f)
 
 		query, err := os.ReadFile(fullPath)
-		if err !=nil{
+		if err != nil {
 			return err
 		}
 
-		_,err = database.Exec(string(query))
-		if err != nil{
+		_, err = database.Exec(string(query))
+		if err != nil {
 			return err
 		}
 
-       fmt.Printf("Migrated: %s\n", f)
+		fmt.Printf("Migrated: %s\n", f)
 	}
 
 	return nil
@@ -68,6 +76,7 @@ func GetFilesNames(path string) ([]string, error) { //?      ./db/migration
 
 	files, err := os.ReadDir(path)
 	if err != nil {
+		fmt.Printf("Error reading directory %s: %v\n", path, err)
 		return nil, err
 	}
 
