@@ -8,8 +8,8 @@ type Config struct {
 
 func Load() *Config {
 	return &Config {
-		Port: "4444",
-		DBPath: "./realtime.db",
+		Port: ":4444",
+		DBPath: "./data/realtime.db",
 		MigrationsPath: "backend/db/migration",
 	}
 }

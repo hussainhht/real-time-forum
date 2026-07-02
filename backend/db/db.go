@@ -9,11 +9,10 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 )
 
-func StartDatabase() (*sql.DB, error) {
-	DBPath := "./db/realtime.db"
+func StartDatabase(DBPath string) (*sql.DB, error) {
 	dbDir := filepath.Dir(DBPath)
 	os.MkdirAll(dbDir, 0755)
-	database, err := sql.Open("sqlite3", DBPath) //todo : add the path to the parameters through the config and main
+	database, err := sql.Open("sqlite3", DBPath)
 	if err != nil {
 		// fmt.Println("Error opening database:", err)
 		return nil, err
@@ -48,8 +47,6 @@ func StartDatabase() (*sql.DB, error) {
 func RunMigrations(database *sql.DB) error { //todo: add dir string in the input of function
 	fileNames, err := GetFilesNames("backend/db/migration")
 	if err != nil {
-		fmt.Printf("Error 1111 %s: %v\n", err)
-
 		return err
 	}
 

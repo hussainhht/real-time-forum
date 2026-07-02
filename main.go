@@ -5,15 +5,19 @@ import (
 	"log"
 	"net/http"
 	"realtime/backend/db"
+	"realtime/backend/config"
 )
 
 func main() {
-	//todo: config information
-	port := ":8080"
+
+	cfg := config.Load();
+ 
+	port := cfg.Port
+	DBPath := cfg.DBPath
 
 	mux := http.NewServeMux()
 
-	db, err := db.StartDatabase()
+	db, err := db.StartDatabase(DBPath)
 	if err != nil {
 		log.Println(err)
 		return
