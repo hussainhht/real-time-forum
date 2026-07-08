@@ -40,6 +40,6 @@ FROM users
 WHERE username = ? or email = ?
 `
 
-// func GetUserByUsernameOrEmail() {
-
-// }
+func GetUserByUsernameOrEmail() {
+	
+}
