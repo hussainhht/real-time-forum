@@ -3,7 +3,7 @@ package global
 import "time"
 
 type Users struct {
-	// ID          int       `json:"id"`
+	ID          int       `json:"id"`
 	FirstName   string    `json:"first_name"`
 	LastName    string    `json:"last_name"`
 	Age         int       `json:"age"`
@@ -13,10 +13,6 @@ type Users struct {
 	Username    string    `json:"username"`
 	Password    string    `json:"password"`
 	// CreatedAt   time.Time `json:"created_at"`
-}
-
-type Login_user struct {
-	
 }
 
 type Sessions struct {

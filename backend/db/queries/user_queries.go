@@ -35,7 +35,7 @@ values (?,?,?,?)
 `
 
 const get_user_by_username_or_email = `
-SELECT id, username, username, email, password
+SELECT id, username, email, password
 FROM users
 WHERE username = ? or email = ?
 `

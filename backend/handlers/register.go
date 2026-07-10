@@ -3,6 +3,7 @@ package handlers
 import (
 	"encoding/json"
 	"net/http"
+	"realtime/backend/db/queries"
 	"realtime/backend/global"
 	"strings"
 
@@ -53,5 +54,14 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	User.Password = string(hashedPassword)
+
+	err = queries.InsertUser(User.Username, User.FirstName, User.LastName, User.Age, User.PhoneNumber, User.Gender, User.Email, User.Password)
+	if err != nil {
+		http.Error(w, "faild to create user", http.StatusInternalServerError)
+		return
+	}
+
+	w.WriteHeader(http.StatusCreated)              //201
+	w.Write([]byte("user registered successfully")) //this will go to the page
 
 }
