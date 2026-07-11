@@ -6,10 +6,10 @@ import (
 
 
 
-func InsertPost(Title string, Content string, CategoryId int) error {
-	_, err := global.Database.Exec(`INSERT INTO posts (title, content, category_id)
+func InsertPost(UserID int ,Title string, Content string, CategoryId int) error {
+	_, err := global.Database.Exec(`INSERT INTO posts (userID ,title, content, category_id)
 	VALUES (?,?,?)
-	`, Title, Content, CategoryId)
+	`,UserID, Title, Content, CategoryId)
 
 	if err != nil {
 		return err

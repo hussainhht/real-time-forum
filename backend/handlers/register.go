@@ -45,7 +45,6 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 	if len(User.Password) < 8 {
 		http.Error(w, "the password can't be less then 8 characters ", http.StatusBadRequest)
 		return
-
 	}
 
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(User.Password), bcrypt.DefaultCost)

@@ -1,7 +1,8 @@
 package global
 
 type Post struct {
-	ID         int    `json:"id"`
+	// ID         int    `json:"id"`
+	UserID     int    `json:"user_ID"`
 	Title      string `json:"title"`
 	Content    string `json:"content"`
 	CategoryID int    `json:"category_id"`
@@ -13,10 +14,10 @@ type Category struct {
 }
 
 type Comment struct {
-	ID   int   		`json:"id"`
-	PostID int		`json:"post_id"`
-	UserID int		`json:"user_id"`
-	Content string	`json:"content"`
+	ID      int    `json:"id"`
+	PostID  int    `json:"post_id"`
+	UserID  int    `json:"user_id"`
+	Content string `json:"content"`
 }
 
 type Like struct {
