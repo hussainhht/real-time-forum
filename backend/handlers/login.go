@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"realtime/backend/db/queries"
 	"realtime/backend/global"
+	"time"
 
 	"golang.org/x/crypto/bcrypt"
 )
@@ -41,8 +42,30 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	
+	sessionID, err := generateSession()
+	if err != nil {
+		http.Error(w, "internal error", http.StatusInternalServerError)
+		return
+	}
 
+	expiresAt := time.Now().Add(24 * time.Hour)
+	err = queries.InsertSession(sessionID, user.ID, expiresAt)
+	if err != nil {
+		http.Error(w, "internal error", http.StatusInternalServerError)
+		return
+	}
+
+	http.SetCookie(w, &http.Cookie{
+		Name: "session_id",
+		Value: sessionID,
+		Expires: expiresAt,
+		HttpOnly: true, //only on the website when it is using an http request, not accessible by JavaScript
+		Path: "/", //works only under the root path which starts with /
+		SameSite: http.SameSiteLaxMode, // hide the session from the other tabs
+	})
+
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(map[string]string{"username": user.Username})
 }
 
 func generateSession() (string, error) {

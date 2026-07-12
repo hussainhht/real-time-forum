@@ -1,3 +1,3 @@
 package queries
 
-func InsertMessage()
+// func InsertMessage()
