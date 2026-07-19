@@ -1,8 +1,14 @@
 package global
 
 type Post struct {
-	// ID         int    `json:"id"`
+	ID         int    `json:"id"`
 	UserID     int    `json:"user_ID"`
+	Title      string `json:"title"`
+	Content    string `json:"content"`
+	CategoryID int    `json:"category_id"`
+}
+
+type NewPost struct {
 	Title      string `json:"title"`
 	Content    string `json:"content"`
 	CategoryID int    `json:"category_id"`

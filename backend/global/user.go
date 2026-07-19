@@ -22,7 +22,7 @@ type LoginRequest struct {
 
 type Sessions struct {
 	ID         	string    	`json:"id"`
-	UserId     	int       	`json:"user_id"`
+	UserID     	int       	`json:"user_id"`
 	CreatedAt 	time.Time 	`json:"created_at"`
 	ExpiresAt 	time.Time 	`json:"expires_at"`
 }

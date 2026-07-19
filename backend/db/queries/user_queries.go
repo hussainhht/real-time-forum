@@ -1,6 +1,7 @@
 package queries
 
 import (
+	"database/sql"
 	"realtime/backend/global"
 	"time"
 )
@@ -47,15 +48,50 @@ const insert_session = `
 INSERT INTO sessions (
 	id,
 	user_id,
-	created_at,
 	expires_at
 )
 values (?,?,?,?)
 `
+
 func InsertSession(sessionID string, userID int, expiresAt time.Time) error {
-	_, err := global.Database.Exec(insert_session, userID, time.Now(), expiresAt)
+	_, err := global.Database.Exec(insert_session, sessionID, userID, expiresAt) //! created at might not be needed to be passed., session id..
 	if err != nil {
 		return err
 	}
 	return nil
+}
+
+const get_user_id_by_Session = `
+SELECT user_id, expires_at
+FROM sessions
+WHERE id = ?
+`
+
+const get_user_by_id = `
+SELECT id, username, email
+FROM users
+WHERE id = ?
+`
+
+func GetUserBySession(sessionID string) (*global.Users, error) {
+
+	var userID int
+	var expiresAt time.Time
+	row := global.Database.QueryRow(get_user_id_by_Session, sessionID)
+	err := row.Scan(&userID, &expiresAt)
+	if err != nil {
+		return nil, err
+	}
+	if time.Now().After(expiresAt) {
+		return nil, sql.ErrNoRows //? is it the way you use it here?
+	}
+
+	var user global.Users
+	row = global.Database.QueryRow(get_user_by_id, userID)
+	err = row.Scan(&user.ID, &user.Username, &user.Email)
+	if err != nil {
+		return nil, err
+	}
+
+	return &user, nil
 }
