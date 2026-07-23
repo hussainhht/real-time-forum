@@ -8,7 +8,7 @@ import (
 	"strings"
 )
 
-func PostHandler(w http.ResponseWriter, r *http.Request) {
+func CreatePostHandler(w http.ResponseWriter, r *http.Request) {
 
 	if r.Method != http.MethodPost {
 		w.Header().Set("Allow", http.MethodPost)
@@ -18,15 +18,14 @@ func PostHandler(w http.ResponseWriter, r *http.Request) {
 
 	sessionCookie, err := r.Cookie("session_id")
 	if err != nil {
-		http.Error(w, "you are not logged in", http.StatusUnauthorized)
+		http.Error(w, "you are not authenticated", http.StatusUnauthorized)
 		return
 	}
 	user, err := queries.GetUserBySession(sessionCookie.Value)
 	if err != nil {
-		http.Error(w, "you are not logged in", http.StatusUnauthorized)
+		http.Error(w, "you are not authenticated", http.StatusUnauthorized)
 		return
 	}
-
 
 	var newPost global.NewPost
 	err = json.NewDecoder(r.Body).Decode(&newPost)
@@ -64,7 +63,6 @@ func PostHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-
 	var post global.Post
 
 	post.Title = newPost.Title
@@ -79,6 +77,6 @@ func PostHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	post.ID = int(postID)
-	w.WriteHeader(http.StatusCreated)	//201
-	json.NewEncoder(w).Encode(post)		//? do not forget to be sure about what these are doing..
+	w.WriteHeader(http.StatusCreated) //201
+	json.NewEncoder(w).Encode(post)   //? do not forget to be sure about what these are doing..
 }

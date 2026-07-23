@@ -2,21 +2,25 @@ package handlers
 
 import "net/http"
 
-func router() {
+func Router() {
 	mux := http.NewServeMux()
 
-	mux.HandleFunc("/register", RegisterHandler)
-	mux.HandleFunc("/login", Login)
+	fileServer := http.FileServer(http.Dir("./frontend"))
+	mux.Handle("/", fileServer)
+
+	mux.HandleFunc("/register", RegisterHandler) //? write handler in the name or not?
+	mux.HandleFunc("/login", LoginHandler)
 	// mux.HandleFunc("/logout", logout)
 
-	// mux.HandleFunc("/posts",Posts)
-	// mux.HandleFunc("/comments",Comments)
+	mux.HandleFunc("/create-post", CreatePostHandler)
+	//feed handler
+
+	mux.HandleFunc("/create-comment", CreateCommentsHandler)
+	//get comments handler
+
 
 	//todo: masge and user hanlders
 
 	//todo: WebSocket route
-
-	fileServer := http.FileServer(http.Dir("./fromtend"))
-	mux.Handle("/",fileServer)
 
 }

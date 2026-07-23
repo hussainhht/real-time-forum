@@ -26,6 +26,10 @@ type Comment struct {
 	Content string `json:"content"`
 }
 
+type NewComment struct {
+	Content string `json:"content"`
+}
+
 type Like struct {
 	PostID int `json:"post_id"`
 	UserID int `json:"user_id"`
