@@ -6,16 +6,16 @@ import (
 	"net/http"
 	"realtime/backend/config"
 	"realtime/backend/db"
+	"realtime/backend/global"
+	"realtime/backend/handlers"
 )
 
 func main() {
 
-	cfg := config.Load();
-
+	cfg := config.Load()
 	port := cfg.Port
 	DBPath := cfg.DBPath
-
-	mux := http.NewServeMux()
+	mux := handlers.Router()
 
 	db, err := db.StartDatabase(DBPath)
 	if err != nil {
@@ -24,7 +24,7 @@ func main() {
 	}
 	defer db.Close()
 
-	
+	global.Database = db
 
 	fmt.Println("Find the best real time forum on http://localhost" + port)
 	err = http.ListenAndServe(port, mux)

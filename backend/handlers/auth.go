@@ -37,6 +37,11 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if strings.ContainsAny(user.Password, " \t\n\r") {
+		http.Error(w, "password cannot contain spaces", http.StatusBadRequest)
+		return
+	}
+
 	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(loginRequest.Password))
 	if err != nil {
 		http.Error(w, "invalid credentials", http.StatusUnauthorized)
