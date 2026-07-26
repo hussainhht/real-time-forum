@@ -1,16 +1,29 @@
-import { renderPage } from "./router.js";
+import { app, renderPage } from "./router.js";
 
 export function LoginPage(app) {
   app.innerHTML = ` 
     
-    <form id="login-form">
-        <h1>login</h1>
-        <input type="text" id="identifier" placeholder="Email or username" required>
-        <input type="password" id="password" placeholder="password" required>
-        <button type="submit">Login</button>
-
-    </form>
-    <button type="button" id="go-register">Creat a new acount</button>
+    <main class="auth-page">
+      <section class="auth-card">
+        <form id="login-form">
+          <h1>login</h1>
+          <input
+            type="text"
+            id="identifier"
+            placeholder="Email or username"
+            required
+          />
+          <input
+            type="password"
+            id="password"
+            placeholder="password"
+            required
+          />
+          <button type="submit">Login</button>
+        </form>
+            <button type="button" id="go-register">Creat a new acount</button>
+      </section>
+    </main>
     
     `;
 
@@ -28,7 +41,7 @@ async function handleLogin(event) {
 
   const identifier = document.getElementById("identifier").value.trim();
 
-  const password = document.getElementById("password").value.trim();
+  const password = document.getElementById("password").value;
 
   if (identifier === "" || password === "") {
     console.log("this is not ok you need to fill all fields");
@@ -55,6 +68,8 @@ async function handleLogin(event) {
     console.log("Login faild:", errorMassage);
     return;
   }
+
+  renderPage("home");
 
   console.log("Login successful");
 }

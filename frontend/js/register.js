@@ -2,26 +2,53 @@ import { renderPage } from "./router.js";
 
 export function RegisterPage(app) {
   app.innerHTML = `
-    <form id="register-form">
-      <h1>register</h1>
+    <main class="auth-page">
+      <section class="auth-card">
+        <h1>Create account</h1>
+        <p class="auth-subtitle">Register to join the forum</p>
 
-      <input type="text" id="first-name" placeholder="First name" required />
-      <input type="text" id="last-name" placeholder="Last name" required />
-      <input type="number" id="age" placeholder="Age" required />
+        <form id="register-form">
+          <div class="name-row">
+            <input
+              type="text"
+              id="first-name"
+              placeholder="First name"
+              required
+            />
+            <input
+              type="text"
+              id="last-name"
+              placeholder="Last name"
+              required
+            />
+          </div>
 
-      <select id="gender" required>
-        <option value="">Choose gender</option>
-        <option value="male">Male</option>
-        <option value="female">Female</option>
-      </select>
+          <input type="number" id="age" placeholder="Age" required />
 
-      <input type="email" id="email" placeholder="Email" required />
-      <input type="text" id="username" placeholder="Username" required />
-      <input type="password" id="password" placeholder="Password" required />
-      <button type="submit">Register</button>
-    </form>
-    <button id="go-login" type="button">Already have an account?</button>
-    <p id="register-message"></p>
+          <select id="gender" required>
+            <option value="">Choose gender</option>
+            <option value="male">Male</option>
+            <option value="female">Female</option>
+          </select>
+
+          <input type="email" id="email" placeholder="Email" required />
+          <input type="text" id="username" placeholder="Username" required />
+          <input
+            type="password"
+            id="password"
+            placeholder="Password"
+            required
+          />
+          <button class="primary-button" type="submit">Register</button>
+        </form>
+     <button id="go-login" type="button" class="login-link">
+        Already have an account?
+      </button>
+      </section>
+
+
+      <p id="register-message" class="form-message"></p>
+    </main>
     `;
 
   const form = document.getElementById("register-form");
@@ -83,6 +110,7 @@ async function handleRegister(event) {
       return;
     }
     message.textContent = "Registerion succesful";
+    renderPage("login");
   } catch (error) {
     console.log(error);
     message.textContent = "could not coonect to sevver";

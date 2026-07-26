@@ -50,7 +50,7 @@ INSERT INTO sessions (
 	user_id,
 	expires_at
 )
-values (?,?,?,?)
+values (?,?,?)
 `
 
 func InsertSession(sessionID string, userID int, expiresAt time.Time) error {
@@ -94,4 +94,14 @@ func GetUserBySession(sessionID string) (*global.Users, error) {
 	}
 
 	return &user, nil
+}
+
+const deleteSession = `
+DELETE FROM sessions
+WHERE session_id = ?
+`
+
+func DeleteSession(sessionID string) error {
+	_, err := global.Database.Exec(deleteSession, sessionID)
+	return err
 }

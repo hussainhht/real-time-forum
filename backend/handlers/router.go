@@ -10,7 +10,7 @@ func Router()*http.ServeMux {
 
 	mux.HandleFunc("/register", RegisterHandler) //? write handler in the name or not?
 	mux.HandleFunc("/login", LoginHandler) //* : "POST/login" try to do this for handle the path and login 
-	// mux.HandleFunc("/logout", logout)
+	mux.HandleFunc("/logout", LogoutHandler)
 
 	mux.HandleFunc("/create-post", CreatePostHandler)
 	//feed handler

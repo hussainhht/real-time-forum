@@ -37,11 +37,6 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if strings.ContainsAny(user.Password, " \t\n\r") {
-		http.Error(w, "password cannot contain spaces", http.StatusBadRequest)
-		return
-	}
-
 	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(loginRequest.Password))
 	if err != nil {
 		http.Error(w, "invalid credentials", http.StatusUnauthorized)
@@ -50,14 +45,14 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 
 	sessionID, err := generateSession()
 	if err != nil {
-		http.Error(w, "internal error", http.StatusInternalServerError)
+		http.Error(w, "error on genrate session", http.StatusInternalServerError)
 		return
 	}
 
 	expiresAt := time.Now().Add(24 * time.Hour)
 	err = queries.InsertSession(sessionID, user.ID, expiresAt)
 	if err != nil {
-		http.Error(w, "internal error", http.StatusInternalServerError)
+		http.Error(w, "error insert sesstion", http.StatusInternalServerError)
 		return
 	}
 
@@ -120,6 +115,11 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if strings.ContainsAny(User.Password, " \t\n\r") {
+		http.Error(w, "password cannot contain spaces", http.StatusBadRequest)
+		return
+	}
+
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(User.Password), bcrypt.DefaultCost)
 	if err != nil {
 		http.Error(w, "can't hash password", http.StatusInternalServerError)
@@ -135,5 +135,37 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 
 	w.WriteHeader(http.StatusCreated)               //201
 	w.Write([]byte("user registered successfully")) //this will go to the page
+
+}
+
+func LogoutHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodPost {
+		http.Error(w, "method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+	sessionCookie, err := r.Cookie("session_id")
+	if err != nil {
+		http.Error(w, "not logged in", http.StatusUnauthorized)
+		return
+	}
+
+	err = queries.DeleteSession(sessionCookie.Value)
+	if err != nil {
+		http.Error(w, "could not logout", http.StatusInternalServerError)
+		return
+	}
+	http.SetCookie(w, &http.Cookie{
+		Name:     "session_id",
+		Value:    "",
+		Path:     "/",
+		MaxAge:   -1,
+		HttpOnly: true,
+		SameSite: http.SameSiteLaxMode,
+	})
+
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(map[string]string{
+		"message": "logout successful",
+	})
 
 }
