@@ -1,6 +1,6 @@
-import { LoginPage } from "./login.js";
-import {RegisterPage} from "./register.js"
- import { homepage } from "./home.js";
+import { LoginPage } from "./pages/login.js";
+import {RegisterPage} from "./pages/register.js"
+import { homepage } from "./pages/home.js";
 
 export const app = document.getElementById("app");
 
