@@ -98,7 +98,7 @@ func GetUserBySession(sessionID string) (*global.Users, error) {
 
 const deleteSession = `
 DELETE FROM sessions
-WHERE session_id = ?
+WHERE id = ?
 `
 
 func DeleteSession(sessionID string) error {

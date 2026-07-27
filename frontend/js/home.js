@@ -1,11 +1,9 @@
 import { renderPage } from "./router.js";
 
-function homepage(app) {
+export function homepage(app) {
   app.innerHTML = `
 
-        <button id="logout-button" type="button">Logout</button>
-
-
+      <button id="logout-button" type="button">Logout</button>
 
     
     `;
@@ -21,7 +19,5 @@ function homepage(app) {
       return;
     }
     renderPage("login");
-    
-
   });
 }
