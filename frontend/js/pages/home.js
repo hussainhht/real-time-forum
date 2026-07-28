@@ -1,6 +1,6 @@
-import { renderPage } from "./router.js";
+import { renderPage, clearCurrentUser } from "./router.js";
 
-export function homepage(app) {
+export function homepage(app,currentUser) {
   app.innerHTML = `
 
       <button id="logout-button" type="button">Logout</button>
@@ -18,6 +18,7 @@ export function homepage(app) {
     if (!respons.ok) {
       return;
     }
+    clearCurrentUser();
     renderPage("login");
   });
 }

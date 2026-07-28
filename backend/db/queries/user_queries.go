@@ -54,7 +54,7 @@ values (?,?,?)
 `
 
 func InsertSession(sessionID string, userID int, expiresAt time.Time) error {
-	_, err := global.Database.Exec(insert_session, sessionID, userID, expiresAt) //! created at might not be needed to be passed., session id..
+	_, err := global.Database.Exec(insert_session, sessionID, userID, expiresAt)
 	if err != nil {
 		return err
 	}

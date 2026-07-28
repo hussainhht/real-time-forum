@@ -14,6 +14,14 @@ type NewPost struct {
 	CategoryID int    `json:"category_id"`
 }
 
+type FeedPost struct {
+	ID       int    `json:"id"`
+	Title    string `json:"title"`
+	Content  string `json:"content"`
+	Username string `json:"username"`
+	Category string `json:"category"`
+}
+
 type Category struct {
 	ID   int    `json:"id"`
 	Name string `json:"name"`

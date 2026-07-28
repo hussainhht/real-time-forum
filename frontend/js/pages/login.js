@@ -1,4 +1,4 @@
-import { app, renderPage } from "./router.js";
+import { app, renderPage , setCurrentUser} from "./router.js";
 
 export function LoginPage(app) {
   app.innerHTML = ` 
@@ -69,6 +69,14 @@ async function handleLogin(event) {
     return;
   }
 
+  const user = await getCurrentUser();
+
+  if(!user){
+    console.error("Login succeeded but session could not be verfied");
+    return;
+  }
+
+  setCurrentUser(user);
   renderPage("home");
 
   console.log("Login successful");
