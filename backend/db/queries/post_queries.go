@@ -103,3 +103,15 @@ func InsertLike(postID int, userId int) error {
 	return nil
 
 }
+
+const Insert_Dislike = `INSERT INTO DISLIKE (post_id,user_id)
+ VALUES (?, ?)`
+
+ func InsertDislike(postID int, userId int) error {
+	_, err := global.Database.Exec(Insert_Dislike, postID, userId)
+
+	if err != nil {
+		return err
+	}
+	return nil
+}
