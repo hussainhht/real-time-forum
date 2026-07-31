@@ -90,3 +90,16 @@ func GetFeed() ([]global.FeedPost, error) {
 
 	return posts, nil
 }
+
+const insert_like = `INSERT INTO likes (post_id,user_id)
+ VALUES (?, ?)`
+
+func InsertLike(postID int, userId int) error {
+	_, err := global.Database.Exec(insert_like, postID, userId)
+
+	if err != nil {
+		return err
+	}
+	return nil
+
+}
