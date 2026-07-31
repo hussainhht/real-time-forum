@@ -2,7 +2,7 @@ package handlers
 
 import "net/http"
 
-func Router()*http.ServeMux {
+func Router() *http.ServeMux {
 	mux := http.NewServeMux()
 
 	//! checking method confirming
@@ -22,6 +22,8 @@ func Router()*http.ServeMux {
 	mux.HandleFunc("POST /posts", CreatePostHandler)
 	// mux.HandleFunc("GET /posts", FeedHandler)          // todo
 	// mux.HandleFunc("GET /posts/{id}", GetPostHandler)  // todo
+	mux.HandleFunc("POST /like", LikeHandler)
+	mux.HandleFunc("POST /dislike", DislikeHandler)
 
 	// comments
 	mux.HandleFunc("POST /posts/{id}/comments", CreateCommentsHandler)
