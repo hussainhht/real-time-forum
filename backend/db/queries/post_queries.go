@@ -67,6 +67,36 @@ func GetPostFeed() ([]structures.FeedPost, error) {
 	return posts, nil
 }
 
+const getPost = `
+SELECT
+	posts.id,
+	posts.title,
+	posts.content,
+	users.username
+FROM posts
+JOIN users ON posts.userID = users.id
+WHERE posts.id = ?
+`
+
+func GetPostByID(postID int) (*structures.FeedPost, error) {
+	var post structures.FeedPost
+	err := global.Database.QueryRow(
+		getPost,
+		postID,
+	).Scan(
+		&post.ID,
+		&post.Title,
+		&post.Content,
+		&post.Username,
+	)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &post, err
+}
+
 //* ------------------------------------------------
 //*----------COMMENT SACTION -------------------------
 //*------------------------------------------------
@@ -108,17 +138,16 @@ func FeedCommentsByPostID(postID int) ([]structures.FeedComment, error) {
 	}
 	defer rows.Close()
 
-	comments := make([]structures.FeedComment,0)
-	for rows.Next(){
+	comments := make([]structures.FeedComment, 0)
+	for rows.Next() {
 		var comment structures.FeedComment
 
-		err:= rows.Scan(
+		err := rows.Scan(
 			&comment.ID,
 			&comment.PostID,
 			&comment.UserID,
 			&comment.Username,
 			&comment.Content,
-		
 		)
 
 		if err != nil {
@@ -128,14 +157,13 @@ func FeedCommentsByPostID(postID int) ([]structures.FeedComment, error) {
 		comments = append(comments, comment)
 	}
 
-	if err:= rows.Err();err != nil {
-		return nil,err
-		
+	if err := rows.Err(); err != nil {
+		return nil, err
+
 	}
 
-	return comments,nil
+	return comments, nil
 
-	
 }
 
 //* ------------------------------------------------

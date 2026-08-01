@@ -1,11 +1,14 @@
 package handlers
 
 import (
+	"database/sql"
 	"encoding/json"
+	"errors"
 	"log"
 	"net/http"
 	"realtime/backend/db/queries"
 	"realtime/backend/global/structures"
+	"strconv"
 	"strings"
 )
 
@@ -69,11 +72,11 @@ func CreatePostHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func FeedPostHandler(w http.ResponseWriter, r *http.Request) {
-	if r.Method != http.MethodGet{
+	if r.Method != http.MethodGet {
 		//todo error json
 		return
 	}
-	
+
 	sessionCookie, err := r.Cookie("session_id")
 	if err != nil {
 		http.Error(w, "you are not authenticated", http.StatusUnauthorized)
@@ -97,4 +100,53 @@ func FeedPostHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Println(err)
 	}
+}
+
+func GetPostHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodGet {
+		//todo json error
+		return
+	}
+	w.Header().Set("Content-Type", "application/json")
+
+	sessionCookie, err := r.Cookie("session_id")
+	if err != nil {
+		http.Error(w, "you are not authenticated", http.StatusUnauthorized) //todo make it json
+		return
+	}
+
+	_, err = queries.GetUserBySession(sessionCookie.Value)
+	if err != nil {
+		http.Error(w, "you are not authenticated", http.StatusUnauthorized) //todo make it json
+		return
+	}
+
+	postID, err := strconv.Atoi(r.PathValue("id"))
+	if err != nil || postID <= 0 {
+		//todo add json error
+
+		return
+	}
+
+	post, err := queries.GetPostByID(postID)
+
+	if errors.Is(err, sql.ErrNoRows) {
+		//todo add json error
+		return
+
+	}
+	if err != nil {
+		log.Println("could not get post:", err)
+
+		//todo add json error
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+	err = json.NewEncoder(w).Encode(post)
+	if err != nil {
+		log.Println("could not encode post:", err)
+
+	}
+
 }

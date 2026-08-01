@@ -21,8 +21,8 @@ func Router() *http.ServeMux {
 
 	// posts
 	mux.HandleFunc("POST /posts", CreatePostHandler)
-	mux.HandleFunc("GET /posts", FeedPostHandler)          // todo
-	// mux.HandleFunc("GET /posts/{id}", GetPostHandler)  // todo
+	mux.HandleFunc("GET /posts", FeedPostHandler)         
+	mux.HandleFunc("GET /posts/{id}", GetPostHandler)  
 
 
 	mux.HandleFunc("POST /api/posts/{id}/like", LikeHandler)
@@ -33,8 +33,8 @@ func Router() *http.ServeMux {
 	mux.HandleFunc("GET /posts/{id}/comments", FeedCommentsHandler) 
 
 	// messages
-	mux.HandleFunc("GET /messages/{userID}", GetMessagesHandler) // todo
-	mux.HandleFunc("POST /messages", MessageHandler)         // todo
+	mux.HandleFunc("GET /messages/{userID}", GetMessagesHandler) 
+	mux.HandleFunc("POST /messages", MessageHandler)         
 
 	// websocket
 	// mux.HandleFunc("GET /ws", WebSocketHandler) // todo
