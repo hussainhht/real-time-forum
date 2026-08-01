@@ -9,6 +9,6 @@ type Messages struct {
 }
 
 type SendMessage struct {
-	ReceiverId int    `json: "receiver_id"`
-	Content    string `json: "content"`
+	ReceiverId int    `json:"receiver_id"`
+	Content    string `json:"content"`
 }
