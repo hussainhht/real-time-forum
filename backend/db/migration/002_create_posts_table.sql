@@ -1,0 +1,11 @@
+CREATE TABLE IF NOT EXISTS posts (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    userID INTEGER NOT NULL,
+    title TEXT NOT NULL,
+    content TEXT NOT NULL,
+
+    FOREIGN KEY (userID) REFERENCES users(id)
+);
+
+
+

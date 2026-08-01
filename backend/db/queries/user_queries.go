@@ -3,6 +3,7 @@ package queries
 import (
 	"database/sql"
 	"realtime/backend/global"
+	"realtime/backend/global/structures"
 	"time"
 )
 
@@ -34,8 +35,8 @@ FROM users
 WHERE username = ? or email = ?
 `
 
-func GetUserByUsernameOrEmail(identifier string) (*global.Users, error) {
-	var user global.Users
+func GetUserByUsernameOrEmail(identifier string) (*structures.Users, error) {
+	var user structures.Users
 	row := global.Database.QueryRow(get_user_by_username_or_email, identifier, identifier)
 	err := row.Scan(&user.ID, &user.Username, &user.Email, &user.Password)
 	if err != nil {
@@ -73,7 +74,7 @@ FROM users
 WHERE id = ?
 `
 
-func GetUserBySession(sessionID string) (*global.Users, error) {
+func GetUserBySession(sessionID string) (*structures.Users, error) {
 
 	var userID int
 	var expiresAt time.Time
@@ -86,7 +87,7 @@ func GetUserBySession(sessionID string) (*global.Users, error) {
 		return nil, sql.ErrNoRows //? is it the way you use it here?
 	}
 
-	var user global.Users
+	var user structures.Users
 	row = global.Database.QueryRow(get_user_by_id, userID)
 	err = row.Scan(&user.ID, &user.Username, &user.Email)
 	if err != nil {
@@ -104,4 +105,46 @@ WHERE id = ?
 func DeleteSession(sessionID string) error {
 	_, err := global.Database.Exec(deleteSession, sessionID)
 	return err
+}
+
+const getUserForChatQuery = `
+SELECT id, username
+FORM users
+WHERE id !=?
+ORDER BY LOWER(username) ASC
+`
+
+func GetUsersForChat(currentUserID int) ([]structures.ChatUser, error) {
+	rows, err := global.Database.Query(
+		getUserForChatQuery,
+		currentUserID,
+	)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	users := []structures.ChatUser{}
+
+	for rows.Next(){
+		var user structures.ChatUser
+
+		err := rows.Scan(
+			&user.ID,
+			&user.Username,
+		)
+		if err != nil {
+			return nil, err
+		}
+
+		users = append(users, user)
+	}
+	if err := rows.Err();err != nil {
+		return nil, err
+		
+	}
+
+	return users, nil
+
+
 }

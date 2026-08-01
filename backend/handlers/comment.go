@@ -2,9 +2,10 @@ package handlers
 
 import (
 	"encoding/json"
+	"log"
 	"net/http"
 	"realtime/backend/db/queries"
-	"realtime/backend/global"
+	"realtime/backend/global/structures"
 	"strconv"
 	"strings"
 )
@@ -44,9 +45,9 @@ func CreateCommentsHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var Comment global.Comment
+	var Comment structures.Comment
 
-	var newComment global.NewComment
+	var newComment structures.NewComment
 	err = json.NewDecoder(r.Body).Decode(&newComment)
 	if err != nil {
 		http.Error(w, "invalid request body", http.StatusBadRequest)
@@ -68,7 +69,7 @@ func CreateCommentsHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	comment := global.Comment{
+	comment := structures.Comment{
 		ID:      int(commentID),
 		PostID:  postID,
 		UserID:  user.ID,
@@ -79,4 +80,45 @@ func CreateCommentsHandler(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusCreated)
 	json.NewEncoder(w).Encode(comment)
 
+}
+
+
+func FeedCommentsHandler(w http.ResponseWriter, r *http.Request){
+	if r.Method != http.MethodGet{
+		//todo error json
+		return
+	}
+	w.Header().Set("Content-Type", "application/json")
+
+	
+	sessionCookie, err := r.Cookie("session_id")
+	if err != nil {
+		http.Error(w, "you are not authenticated", http.StatusUnauthorized)
+		return
+	}
+
+	_, err = queries.GetUserBySession(sessionCookie.Value)
+	if err != nil {
+		http.Error(w, "you are not authenticated", http.StatusUnauthorized)
+		return
+	}
+	
+	postID , err := strconv.Atoi(r.PathValue("id"))
+	if err != nil {
+		//todo : add json error
+		return
+	}
+
+
+	comments, err := queries.FeedCommentsByPostID(postID)
+	if err != nil {
+		//todo : add json error 
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+	err = json.NewEncoder(w).Encode(comments)
+	if err != nil {
+		log.Println(err)
+	}
 }

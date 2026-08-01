@@ -6,7 +6,7 @@ import (
 	"encoding/json"
 	"net/http"
 	"realtime/backend/db/queries"
-	"realtime/backend/global"
+	"realtime/backend/global/structures"
 	"strings"
 	"time"
 
@@ -19,7 +19,7 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var loginRequest global.LoginRequest
+	var loginRequest structures.LoginRequest
 	err := json.NewDecoder(r.Body).Decode(&loginRequest)
 	if err != nil {
 		http.Error(w, "invalid request body", http.StatusBadRequest)
@@ -52,7 +52,7 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 	expiresAt := time.Now().Add(24 * time.Hour)
 	err = queries.InsertSession(sessionID, user.ID, expiresAt)
 	if err != nil {
-		http.Error(w, "error insert sesstion", http.StatusInternalServerError)
+		http.Error(w, "error insert session", http.StatusInternalServerError)
 		return
 	}
 
@@ -84,11 +84,11 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var User global.Users
+	var User structures.Users
 
 	err := json.NewDecoder(r.Body).Decode(&User)
 	if err != nil {
-		http.Error(w, "invaled request body", http.StatusBadRequest)
+		http.Error(w, "invalid request body", http.StatusBadRequest)
 		return
 	}
 

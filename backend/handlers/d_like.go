@@ -4,12 +4,12 @@ import (
 	"encoding/json"
 	"net/http"
 	"realtime/backend/db/queries"
-	"realtime/backend/global"
+	"realtime/backend/global/structures"
 )
 
 func LikeHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
-		http.Error(w, "Methode not allowed", http.StatusMethodNotAllowed)
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 		return
 
 	}
@@ -26,14 +26,14 @@ func LikeHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var like global.Like
+	var like structures.Like
 	err = json.NewDecoder(r.Body).Decode(&like)
 	if err != nil {
-		http.Error(w, "invbaled request body", http.StatusBadRequest)
+		http.Error(w, "invalid request body", http.StatusBadRequest)
 		return
 	}
 	if like.PostID <= 0 {
-		http.Error(w, "invaled post id", http.StatusBadRequest)
+		http.Error(w, "invalid post id", http.StatusBadRequest)
 		return
 	}
 
@@ -48,7 +48,7 @@ func LikeHandler(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusCreated)
 
 	json.NewEncoder(w).Encode(map[string]any{
-		"massge": "line added successfully",
+		"massage": "line added successfully",
 		"liked":  true,
 	})
 
@@ -56,7 +56,7 @@ func LikeHandler(w http.ResponseWriter, r *http.Request) {
 
 func DislikeHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
-		http.Error(w, "Methode not allowed", http.StatusMethodNotAllowed)
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 		return
 
 	}
@@ -73,14 +73,14 @@ func DislikeHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var Dislike global.Dislike
+	var Dislike structures.Dislike
 	err = json.NewDecoder(r.Body).Decode(&Dislike)
 	if err != nil {
-		http.Error(w, "invbaled request body", http.StatusBadRequest)
+		http.Error(w, "invalid request body", http.StatusBadRequest)
 		return
 	}
 	if Dislike.PostID <= 0 {
-		http.Error(w, "invaled post id", http.StatusBadRequest)
+		http.Error(w, "invalid post id", http.StatusBadRequest)
 		return
 	}
 
@@ -95,7 +95,7 @@ func DislikeHandler(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusCreated)
 
 	json.NewEncoder(w).Encode(map[string]any{
-		"massge":  "dislike added successfully",
+		"massage":  "dislike added successfully",
 		"dislike": true,
 	})
 

@@ -1,17 +1,15 @@
-package global
+package structures
 
 type Post struct {
-	ID         int    `json:"id"`
-	UserID     int    `json:"user_ID"`
-	Title      string `json:"title"`
-	Content    string `json:"content"`
-	CategoryID int    `json:"category_id"`
+	ID      int    `json:"id"`
+	UserID  int    `json:"user_ID"`
+	Title   string `json:"title"`
+	Content string `json:"content"`
 }
 
 type NewPost struct {
-	Title      string `json:"title"`
-	Content    string `json:"content"`
-	CategoryID int    `json:"category_id"`
+	Title   string `json:"title"`
+	Content string `json:"content"`
 }
 
 type FeedPost struct {
@@ -19,12 +17,8 @@ type FeedPost struct {
 	Title    string `json:"title"`
 	Content  string `json:"content"`
 	Username string `json:"username"`
-	Category string `json:"category"`
-}
 
-type Category struct {
-	ID   int    `json:"id"`
-	Name string `json:"name"`
+	//? we can add here created at to know when this post create 
 }
 
 type Comment struct {
@@ -32,6 +26,18 @@ type Comment struct {
 	PostID  int    `json:"post_id"`
 	UserID  int    `json:"user_id"`
 	Content string `json:"content"`
+}
+
+type FeedComment struct {
+	ID     int `json:"id"`
+	PostID int `json:"post_id"`
+	UserID int `json:"user_id"`	
+	Username  string `json:"username"`
+	Content   string `json:"content"`
+
+
+	// CreatedAt string `json:"created_at"` //? we can addd it if we want to know when this comment added 
+
 }
 
 type NewComment struct {

@@ -2,9 +2,10 @@ package handlers
 
 import (
 	"encoding/json"
+	"log"
 	"net/http"
 	"realtime/backend/db/queries"
-	"realtime/backend/global"
+	"realtime/backend/global/structures"
 	"strings"
 )
 
@@ -27,7 +28,7 @@ func CreatePostHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var newPost global.NewPost
+	var newPost structures.NewPost
 	err = json.NewDecoder(r.Body).Decode(&newPost)
 	if err != nil {
 		http.Error(w, "invalid request body", http.StatusBadRequest)
@@ -49,28 +50,14 @@ func CreatePostHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "maximum Content reached (10000 characters)", http.StatusBadRequest)
 		return
 	}
-	if newPost.CategoryID <= 0 {
-		http.Error(w, "invalid category id", http.StatusBadRequest)
-		return
-	}
-	exists, err := queries.CategoryExists(newPost.CategoryID)
-	if err != nil {
-		http.Error(w, "internal server error", http.StatusInternalServerError)
-		return
-	}
-	if !exists {
-		http.Error(w, "invalid category id", http.StatusBadRequest)
-		return
-	}
 
-	var post global.Post
+	var post structures.Post
 
 	post.Title = newPost.Title
 	post.Content = newPost.Content
 	post.UserID = user.ID
-	post.CategoryID = newPost.CategoryID
 
-	postID, err := queries.InsertPost(post.UserID, post.Title, post.Content, post.CategoryID)
+	postID, err := queries.InsertPost(post.UserID, post.Title, post.Content)
 	if err != nil {
 		http.Error(w, "post couldn't be inserted to the database", http.StatusInternalServerError)
 		return
@@ -79,4 +66,35 @@ func CreatePostHandler(w http.ResponseWriter, r *http.Request) {
 	post.ID = int(postID)
 	w.WriteHeader(http.StatusCreated) //201
 	json.NewEncoder(w).Encode(post)   //? do not forget to be sure about what these are doing..
+}
+
+func FeedPostHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodGet{
+		//todo error json
+		return
+	}
+	
+	sessionCookie, err := r.Cookie("session_id")
+	if err != nil {
+		http.Error(w, "you are not authenticated", http.StatusUnauthorized)
+		return
+	}
+
+	_, err = queries.GetUserBySession(sessionCookie.Value)
+	if err != nil {
+		http.Error(w, "you are not authenticated", http.StatusUnauthorized)
+		return
+	}
+
+	posts, err := queries.GetPostFeed()
+	if err != nil {
+		http.Error(w, "there is a problem with database", http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	err = json.NewEncoder(w).Encode(posts)
+	if err != nil {
+		log.Println(err)
+	}
 }
