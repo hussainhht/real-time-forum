@@ -17,7 +17,7 @@ func main() {
 	DBPath := cfg.DBPath
 	mux := handlers.Router()
 
-	db, err := db.StartDatabase(DBPath)
+	db, err := db.StartDatabase(DBPath, cfg.MigrationsPath)
 	if err != nil {
 		log.Println(err)
 		return

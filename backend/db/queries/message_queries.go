@@ -3,54 +3,56 @@ package queries
 import (
 	"realtime/backend/global"
 	"realtime/backend/global/structures"
+	"time"
 )
 
-const Insert_messge = `INSERT INTO messages (
+const insert_message = `INSERT INTO messages (
 	sender_id,
 	receiver_id,
-	content
-
-) VALUES (?,?,?)
+	content,
+	created_at
+) VALUES (?,?,?,?)
 `
 
-func InsertMessage(senderID, receiverID int, content string) (int64, error) {
+func InsertMessage(senderID, receiverID int, content string, createdAt time.Time) (int64, error) {
 	result, err := global.Database.Exec(
-		Insert_messge,
+		insert_message,
 		senderID,
 		receiverID,
 		content,
+		createdAt,
 	)
 	if err != nil {
 		return 0, err
 	}
 
-	messgeID, err := result.LastInsertId()
+	messageID, err := result.LastInsertId()
 	if err != nil {
 		return 0, err
 	}
 
-	return messgeID, nil
+	return messageID, nil
 }
 
 const getMessageBetweenUsers = `
 SELECT
 	id,
 	sender_id,
-	reciver_id,
+	receiver_id,
 	content,
 	created_at
 	FROM messages
 	WHERE (
 		(sender_id = ? AND receiver_id = ?)
-		OR	 
-		(sender_id = ? AND receiver_id = ?) 
+		OR
+		(sender_id = ? AND receiver_id = ?)
 	)
-		AND (? = 0 OR id < ?)
-		ORDER BY id DESC 
-		LIMIT 10
-		`
+	AND (? = 0 OR id < ?)
+	ORDER BY id DESC
+	LIMIT 10
+`
 
-func GetMessagesBetweenUsers(currentUserID, otherUserID, beforeID int) (
+func FeedMessagesBetweenUsers(currentUserID, otherUserID, beforeID int) ( //before is the last inserted message id
 	[]structures.Message, error,
 ) {
 	rows, err := global.Database.Query(
@@ -70,7 +72,7 @@ func GetMessagesBetweenUsers(currentUserID, otherUserID, beforeID int) (
 
 	messages := []structures.Message{}
 
-	for rows.Next(){
+	for rows.Next() {
 		var message structures.Message
 		err := rows.Scan(
 			&message.ID,
@@ -84,13 +86,14 @@ func GetMessagesBetweenUsers(currentUserID, otherUserID, beforeID int) (
 		}
 		messages = append(messages, message)
 	}
+
 	if err := rows.Err(); err != nil {
 		return nil, err
 	}
 
-	// to make the message from nold to new 
-	for i, j:= 0, len(messages)-1; i< j;i,j = i+1, j-1{
-		messages[i], messages[j] = messages[j] , messages[i]
+	// to make the message from old to new
+	for i, j := 0, len(messages)-1; i < j; i, j = i+1, j-1 {
+		messages[i], messages[j] = messages[j], messages[i]
 	}
 
 	return messages, nil

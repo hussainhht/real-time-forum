@@ -67,13 +67,16 @@ func CreatePostHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	post.ID = int(postID)
-	w.WriteHeader(http.StatusCreated) //201
-	json.NewEncoder(w).Encode(post)   //? do not forget to be sure about what these are doing..
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusCreated)
+	json.NewEncoder(w).Encode(post)
 }
 
 func FeedPostHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodGet {
-		//todo error json
+		w.Header().Set("Allow", http.MethodGet)
+		http.Error(w, "method not allowed", http.StatusMethodNotAllowed)
 		return
 	}
 
@@ -96,6 +99,7 @@ func FeedPostHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
 	err = json.NewEncoder(w).Encode(posts)
 	if err != nil {
 		log.Println(err)
@@ -104,49 +108,44 @@ func FeedPostHandler(w http.ResponseWriter, r *http.Request) {
 
 func GetPostHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodGet {
-		//todo json error
+		w.Header().Set("Allow", http.MethodGet)
+		http.Error(w, "method not allowed", http.StatusMethodNotAllowed)
 		return
 	}
-	w.Header().Set("Content-Type", "application/json")
 
 	sessionCookie, err := r.Cookie("session_id")
 	if err != nil {
-		http.Error(w, "you are not authenticated", http.StatusUnauthorized) //todo make it json
+		http.Error(w, "you are not authenticated", http.StatusUnauthorized)
 		return
 	}
 
 	_, err = queries.GetUserBySession(sessionCookie.Value)
 	if err != nil {
-		http.Error(w, "you are not authenticated", http.StatusUnauthorized) //todo make it json
+		http.Error(w, "you are not authenticated", http.StatusUnauthorized)
 		return
 	}
 
 	postID, err := strconv.Atoi(r.PathValue("id"))
 	if err != nil || postID <= 0 {
-		//todo add json error
-
+		http.Error(w, "invalid post id", http.StatusBadRequest)
 		return
 	}
 
 	post, err := queries.GetPostByID(postID)
-
 	if errors.Is(err, sql.ErrNoRows) {
-		//todo add json error
+		http.Error(w, "post not found", http.StatusNotFound)
 		return
-
 	}
 	if err != nil {
 		log.Println("could not get post:", err)
-
-		//todo add json error
+		http.Error(w, "could not get post", http.StatusInternalServerError)
 		return
 	}
 
+	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	err = json.NewEncoder(w).Encode(post)
 	if err != nil {
 		log.Println("could not encode post:", err)
-
 	}
-
 }

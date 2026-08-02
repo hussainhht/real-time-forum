@@ -5,16 +5,17 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"sort"
 
 	_ "github.com/mattn/go-sqlite3"
 )
 
-func StartDatabase(DBPath string) (*sql.DB, error) {
+func StartDatabase(DBPath string, migrationsPath string) (*sql.DB, error) {
 	dbDir := filepath.Dir(DBPath)
 	os.MkdirAll(dbDir, 0755)
 	database, err := sql.Open("sqlite3", DBPath)
 	if err != nil {
-		// fmt.Println("Error opening database:", err)
+		fmt.Println("Error opening database:", err)
 		return nil, err
 	}
 
@@ -32,7 +33,7 @@ func StartDatabase(DBPath string) (*sql.DB, error) {
 		return nil, err
 	}
 
-	err = RunMigrations(database)
+	err = RunMigrations(database, migrationsPath)
 	if err != nil {
 		database.Close()
 		fmt.Println("Error running migrations:", err)
@@ -44,14 +45,14 @@ func StartDatabase(DBPath string) (*sql.DB, error) {
 	return database, nil
 }
 
-func RunMigrations(database *sql.DB) error { //todo: add dir string in the input of function
-	fileNames, err := GetFilesNames("backend/db/migration")
+func RunMigrations(database *sql.DB, migrationsPath string) error { //todo: add dir string in the input of function
+	fileNames, err := GetFilesNames(migrationsPath)
 	if err != nil {
 		return err
 	}
 
 	for _, f := range fileNames {
-		fullPath := filepath.Join("backend/db/migration/" + f)
+		fullPath := filepath.Join(migrationsPath, f)
 
 		query, err := os.ReadFile(fullPath)
 		if err != nil {
@@ -80,10 +81,12 @@ func GetFilesNames(path string) ([]string, error) { //?      ./db/migration
 	var filesNames []string
 
 	for _, file := range files {
-		if !file.IsDir() && filepath.Ext(file.Name()) == ".sql" { //Extention
+		if !file.IsDir() && filepath.Ext(file.Name()) == ".sql" { // Ext stands for Extension
 			filesNames = append(filesNames, file.Name())
 		}
 	}
+
+	sort.Strings(filesNames)
 
 	return filesNames, nil
 }

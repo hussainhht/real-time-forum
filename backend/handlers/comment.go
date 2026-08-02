@@ -11,7 +11,7 @@ import (
 )
 
 func CreateCommentsHandler(w http.ResponseWriter, r *http.Request) {
-	if r.Method != http.MethodPost { //! check router
+	if r.Method != http.MethodPost {
 		http.Error(w, "method not allowed", http.StatusMethodNotAllowed)
 		return
 	}
@@ -45,8 +45,6 @@ func CreateCommentsHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var Comment structures.Comment
-
 	var newComment structures.NewComment
 	err = json.NewDecoder(r.Body).Decode(&newComment)
 	if err != nil {
@@ -54,9 +52,10 @@ func CreateCommentsHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	Comment.Content = strings.TrimSpace(Comment.Content)
-	if Comment.Content == "" {
+	newComment.Content = strings.TrimSpace(newComment.Content)
+	if newComment.Content == "" {
 		http.Error(w, "missing comment content", http.StatusBadRequest)
+		return
 	}
 	if len(newComment.Content) >= 10000 {
 		http.Error(w, "maximum Content reached 10000", http.StatusBadRequest)
@@ -79,18 +78,15 @@ func CreateCommentsHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusCreated)
 	json.NewEncoder(w).Encode(comment)
-
 }
 
-
-func FeedCommentsHandler(w http.ResponseWriter, r *http.Request){
-	if r.Method != http.MethodGet{
-		//todo error json
+func FeedCommentsHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodGet {
+		w.Header().Set("Allow", http.MethodGet)
+		http.Error(w, "method not allowed", http.StatusMethodNotAllowed)
 		return
 	}
-	w.Header().Set("Content-Type", "application/json")
 
-	
 	sessionCookie, err := r.Cookie("session_id")
 	if err != nil {
 		http.Error(w, "you are not authenticated", http.StatusUnauthorized)
@@ -102,20 +98,20 @@ func FeedCommentsHandler(w http.ResponseWriter, r *http.Request){
 		http.Error(w, "you are not authenticated", http.StatusUnauthorized)
 		return
 	}
-	
-	postID , err := strconv.Atoi(r.PathValue("id"))
+
+	postID, err := strconv.Atoi(r.PathValue("id"))
 	if err != nil {
-		//todo : add json error
+		http.Error(w, "invalid post ID", http.StatusBadRequest)
 		return
 	}
-
 
 	comments, err := queries.FeedCommentsByPostID(postID)
 	if err != nil {
-		//todo : add json error 
+		http.Error(w, "could not load comments", http.StatusInternalServerError)
 		return
 	}
 
+	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	err = json.NewEncoder(w).Encode(comments)
 	if err != nil {

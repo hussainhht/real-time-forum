@@ -18,7 +18,7 @@ type FeedPost struct {
 	Content  string `json:"content"`
 	Username string `json:"username"`
 
-	//? we can add here created at to know when this post create 
+	//? we can add here created at to know when this post create
 }
 
 type Comment struct {
@@ -31,25 +31,15 @@ type Comment struct {
 type FeedComment struct {
 	ID     int `json:"id"`
 	PostID int `json:"post_id"`
-	UserID int `json:"user_id"`	
+	UserID int `json:"user_id"`
 	Username  string `json:"username"`
 	Content   string `json:"content"`
 
 
-	// CreatedAt string `json:"created_at"` //? we can addd it if we want to know when this comment added 
+	// CreatedAt string `json:"created_at"` //? we can added it if we want to know when this comment added
 
 }
 
 type NewComment struct {
 	Content string `json:"content"`
-}
-
-type Like struct {
-	PostID int `json:"post_id"`
-	UserID int `json:"user_id"`
-}
-
-type Dislike struct {
-	PostID int `json:"post_id"`
-	UserID int `json:"user_id"`
 }

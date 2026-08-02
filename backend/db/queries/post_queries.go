@@ -7,7 +7,7 @@ import (
 )
 
 // * ------------------------------------------------
-// *----------POST SACTION -------------------------
+// *----------POST SECTION -------------------------
 // *------------------------------------------------
 const insert_post = `INSERT INTO posts (userID ,title, content) VALUES (?,?,?)`
 
@@ -18,8 +18,12 @@ func InsertPost(UserID int, Title string, Content string) (int64, error) {
 		return 0, err
 	}
 
-	return result.LastInsertId() //this function already returns (int64, error)
-	//? what number is it giving??
+	postID, err := result.LastInsertId()
+	if err != nil {
+		return 0, err
+	}
+
+	return postID, nil
 }
 
 const post_exists = `SELECT 1 FROM posts WHERE id = ?`
@@ -98,7 +102,7 @@ func GetPostByID(postID int) (*structures.FeedPost, error) {
 }
 
 //* ------------------------------------------------
-//*----------COMMENT SACTION -------------------------
+//*----------COMMENT SECTION -------------------------
 //*------------------------------------------------
 
 const insert_comment = `
@@ -115,22 +119,22 @@ func InsertComment(PostId int, UserId int, Content string) (int64, error) {
 
 }
 
-const GetCommentsByPostID = `
-	SELECT 
+const feedCommentsByPostID = `
+	SELECT
 		comments.id,
 		comments.post_id,
 		comments.user_id,
 		users.username,
 		comments.content
-	FROM comments 
+	FROM comments
 	JOIN users ON comments.user_id = users.id
-	WhERE comments.post_id = ?
-	ORDER BY comments.id ASC 
+	WHERE comments.post_id = ?
+	ORDER BY comments.id ASC
 `
 
 func FeedCommentsByPostID(postID int) ([]structures.FeedComment, error) {
 	rows, err := global.Database.Query(
-		GetCommentsByPostID,
+		feedCommentsByPostID,
 		postID,
 	)
 	if err != nil {
@@ -140,6 +144,7 @@ func FeedCommentsByPostID(postID int) ([]structures.FeedComment, error) {
 
 	comments := make([]structures.FeedComment, 0)
 	for rows.Next() {
+
 		var comment structures.FeedComment
 
 		err := rows.Scan(
@@ -166,33 +171,3 @@ func FeedCommentsByPostID(postID int) ([]structures.FeedComment, error) {
 
 }
 
-//* ------------------------------------------------
-//*----------like and dislike SACTION --------------
-//*------------------------------------------------
-
-const insert_like = `
-INSERT INTO likes (post_id,user_id)
-VALUES (?, ?)
-`
-
-func InsertLike(postID int, userId int) error {
-	_, err := global.Database.Exec(insert_like, postID, userId)
-
-	if err != nil {
-		return err
-	}
-	return nil
-
-}
-
-const Insert_Dislike = `INSERT INTO DISLIKE (post_id,user_id)
- VALUES (?, ?)`
-
-func InsertDislike(postID int, userId int) error {
-	_, err := global.Database.Exec(Insert_Dislike, postID, userId)
-
-	if err != nil {
-		return err
-	}
-	return nil
-}

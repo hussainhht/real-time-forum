@@ -2,14 +2,14 @@ package structures
 
 import "time"
 
-type Messages struct {
-	ID         int64  `json:"id"`
-	SenderId   int    `json:"sender_id"`
-	ReceiverId int    `json:"receiver_id"`
-	Content    string `json:"content"`
-}
+// type Messages struct { //for a chat list
+// 	ID         int64  `json:"id"`
+// 	SenderId   int    `json:"sender_id"`
+// 	ReceiverId int    `json:"receiver_id"`
+// 	Content    string `json:"content"`
+// }
 
-type Message struct {
+type Message struct { //a single message
 	ID         int64  `json:"id"`
 	SenderId   int    `json:"sender_id"`
 	ReceiverId int    `json:"receiver_id"`

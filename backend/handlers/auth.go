@@ -65,6 +65,7 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 		SameSite: http.SameSiteLaxMode, // hide the session from the other tabs
 	})
 
+	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(map[string]string{"username": user.Username})
 }
@@ -133,9 +134,9 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	w.WriteHeader(http.StatusCreated)               //201
-	w.Write([]byte("user registered successfully")) //this will go to the page
-
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusCreated) //201
+	json.NewEncoder(w).Encode(map[string]string{"message": "user registered successfully"})
 }
 
 func LogoutHandler(w http.ResponseWriter, r *http.Request) {
@@ -163,9 +164,9 @@ func LogoutHandler(w http.ResponseWriter, r *http.Request) {
 		SameSite: http.SameSiteLaxMode,
 	})
 
+	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(map[string]string{
 		"message": "logout successful",
 	})
-
 }
