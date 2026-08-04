@@ -1,6 +1,6 @@
 import { renderPage, clearCurrentUser } from "./router.js";
 
-export function homepage(app, currentUser) {
+export async function homepage(app, currentUser) {
   app.innerHTML = `
 
     <div id="home-page">
@@ -79,4 +79,7 @@ export function homepage(app, currentUser) {
     console.error("Error in the posts:", error);
     postsContainer.innerHTML = "feailed to load posts";
   } 
+
+
+  //todo create post form 
 }
