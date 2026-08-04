@@ -1,7 +1,7 @@
 import { LoginPage } from "./pages/login.js";
-import {RegisterPage} from "./pages/register.js"
-mport { homepage } from "./pages/home
-import {getCurrentUser} from "./auth.js".js";
+import {RegisterPage} from "./pages/register.js";
+import { homepage } from "./pages/home";
+import {getCurrentUser} from "./auth.js";
 
 export const app = document.getElementById("app");
 let currentUser = null;
