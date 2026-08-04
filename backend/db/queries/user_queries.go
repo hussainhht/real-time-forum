@@ -13,16 +13,15 @@ INSERT INTO users (
 	first_name,
 	last_name,
 	age,
-	phone_number,
 	gender,
 	email,
 	password
 )
-values (?,?,?,?,?,?,?,?)
+values (?,?,?,?,?,?,?)
 `
 
-func InsertUser(username string, firstName string, lastName string, age int, phoneNumber string, gender string, email string, password string) error {
-	_, err := global.Database.Exec(insert_user, username, firstName, lastName, age, phoneNumber, gender, email, password)
+func InsertUser(username string, firstName string, lastName string, age int, gender string, email string, password string) error {
+	_, err := global.Database.Exec(insert_user, username, firstName, lastName, age, gender, email, password)
 	if err != nil {
 		return err
 	}
@@ -69,7 +68,7 @@ WHERE id = ?
 `
 
 const get_user_by_id = `
-SELECT id, username, email
+SELECT id, username, email, first_name, last_name
 FROM users
 WHERE id = ?
 `
@@ -84,12 +83,13 @@ func GetUserBySession(sessionID string) (*structures.Users, error) {
 		return nil, err
 	}
 	if time.Now().After(expiresAt) {
-		return nil, sql.ErrNoRows //? is it the way you use it here?
+		DeleteSession(sessionID)
+		return nil, sql.ErrNoRows
 	}
 
 	var user structures.Users
 	row = global.Database.QueryRow(get_user_by_id, userID)
-	err = row.Scan(&user.ID, &user.Username, &user.Email)
+	err = row.Scan(&user.ID, &user.Username, &user.Email, &user.FirstName, &user.LastName)
 	if err != nil {
 		return nil, err
 	}

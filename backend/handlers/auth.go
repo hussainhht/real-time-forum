@@ -1,58 +1,59 @@
 package handlers
 
 import (
-	"crypto/rand"
-	"encoding/hex"
-	"encoding/json"
 	"net/http"
 	"realtime/backend/db/queries"
 	"realtime/backend/global/structures"
+	"realtime/backend/global/utilities"
 	"strings"
 	"time"
+
+	"crypto/rand"
+	"encoding/hex"
 
 	"golang.org/x/crypto/bcrypt"
 )
 
 func LoginHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
-		http.Error(w, "method not allowed", http.StatusMethodNotAllowed)
+		utilities.ErrorJSON(w, http.StatusMethodNotAllowed, "method not allowed")
 		return
 	}
 
 	var loginRequest structures.LoginRequest
-	err := json.NewDecoder(r.Body).Decode(&loginRequest)
+	err := utilities.ReadJSON(r, &loginRequest) // decoding
 	if err != nil {
-		http.Error(w, "invalid request body", http.StatusBadRequest)
+		utilities.ErrorJSON(w, http.StatusBadRequest, "invalid request body")
 		return
 	}
 
 	if loginRequest.Identifier == "" || loginRequest.Password == "" {
-		http.Error(w, "missing required fields", http.StatusBadRequest)
+		utilities.ErrorJSON(w, http.StatusBadRequest, "missing required fields")
 		return
 	}
 
 	user, err := queries.GetUserByUsernameOrEmail(loginRequest.Identifier)
 	if err != nil {
-		http.Error(w, "invalid credentials", http.StatusUnauthorized)
+		utilities.ErrorJSON(w, http.StatusUnauthorized, "invalid credentials")
 		return
 	}
 
 	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(loginRequest.Password))
 	if err != nil {
-		http.Error(w, "invalid credentials", http.StatusUnauthorized)
+		utilities.ErrorJSON(w, http.StatusUnauthorized, "invalid credentials")
 		return
 	}
 
 	sessionID, err := generateSession()
 	if err != nil {
-		http.Error(w, "error on genrate session", http.StatusInternalServerError)
+		utilities.ErrorJSON(w, http.StatusInternalServerError, "error on generating the session")
 		return
 	}
 
 	expiresAt := time.Now().Add(24 * time.Hour)
 	err = queries.InsertSession(sessionID, user.ID, expiresAt)
 	if err != nil {
-		http.Error(w, "error insert session", http.StatusInternalServerError)
+		utilities.ErrorJSON(w, http.StatusInternalServerError, "error insert session")
 		return
 	}
 
@@ -60,14 +61,12 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 		Name:     "session_id",
 		Value:    sessionID,
 		Expires:  expiresAt,
-		HttpOnly: true,                 //only on the website when it is using an http request, not accessible by JavaScript
-		Path:     "/",                  //works only under the root path which starts with /
-		SameSite: http.SameSiteLaxMode, // hide the session from the other tabs
+		HttpOnly: true,						//?! this do not allow the cookie to be accessed by JavaScript, which helps protect against cross-site scripting (XSS) attacks.
+		Path:     "/",
+		SameSite: http.SameSiteLaxMode,		//?! this helps protect against cross-site request forgery (CSRF) attacks by restricting how cookies are sent with cross-site requests.
 	})
 
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(map[string]string{"username": user.Username})
+	utilities.WriteJSON(w, http.StatusOK, map[string]string{"username": user.Username})
 }
 
 func generateSession() (string, error) {
@@ -81,21 +80,20 @@ func generateSession() (string, error) {
 
 func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
-		http.Error(w, "method not allowed", http.StatusMethodNotAllowed)
+		utilities.ErrorJSON(w, http.StatusMethodNotAllowed, "method not allowed")
 		return
 	}
 
 	var User structures.Users
 
-	err := json.NewDecoder(r.Body).Decode(&User)
+	err := utilities.ReadJSON(r, &User)
 	if err != nil {
-		http.Error(w, "invalid request body", http.StatusBadRequest)
+		utilities.ErrorJSON(w, http.StatusBadRequest, "invalid request body")
 		return
 	}
 
 	User.FirstName = strings.TrimSpace(User.FirstName)
 	User.LastName = strings.TrimSpace(User.LastName)
-	User.PhoneNumber = strings.TrimSpace(User.PhoneNumber)
 	User.Gender = strings.TrimSpace(User.Gender)
 	User.Username = strings.TrimSpace(User.Username)
 	User.Email = strings.TrimSpace(User.Email)
@@ -107,52 +105,50 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 		User.Gender == "" ||
 		User.Username == "" ||
 		User.Password == "" {
-		http.Error(w, "missing required fields", http.StatusBadRequest)
+		utilities.ErrorJSON(w, http.StatusBadRequest, "missing required fields")
 		return
 	}
 
 	if len(User.Password) < 8 {
-		http.Error(w, "the password can't be less then 8 characters ", http.StatusBadRequest)
+		utilities.ErrorJSON(w, http.StatusBadRequest, "the password can't be less then 8 characters")
 		return
 	}
 
 	if strings.ContainsAny(User.Password, " \t\n\r") {
-		http.Error(w, "password cannot contain spaces", http.StatusBadRequest)
+		utilities.ErrorJSON(w, http.StatusBadRequest, "password cannot contain spaces")
 		return
 	}
 
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(User.Password), bcrypt.DefaultCost)
 	if err != nil {
-		http.Error(w, "can't hash password", http.StatusInternalServerError)
+		utilities.ErrorJSON(w, http.StatusInternalServerError, "can't hash password")
 		return
 	}
 	User.Password = string(hashedPassword)
 
-	err = queries.InsertUser(User.Username, User.FirstName, User.LastName, User.Age, User.PhoneNumber, User.Gender, User.Email, User.Password)
+	err = queries.InsertUser(User.Username, User.FirstName, User.LastName, User.Age, User.Gender, User.Email, User.Password)
 	if err != nil {
-		http.Error(w, "faild to create user", http.StatusInternalServerError)
+		utilities.ErrorJSON(w, http.StatusInternalServerError, "faild to create user")
 		return
 	}
 
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusCreated) //201
-	json.NewEncoder(w).Encode(map[string]string{"message": "user registered successfully"})
+	utilities.WriteJSON(w, http.StatusCreated, map[string]string{"message": "user registered successfully"})
 }
 
 func LogoutHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
-		http.Error(w, "method not allowed", http.StatusMethodNotAllowed)
+		utilities.ErrorJSON(w, http.StatusMethodNotAllowed, "method not allowed")
 		return
 	}
 	sessionCookie, err := r.Cookie("session_id")
 	if err != nil {
-		http.Error(w, "not logged in", http.StatusUnauthorized)
+		utilities.ErrorJSON(w, http.StatusUnauthorized, "not logged in")
 		return
 	}
 
 	err = queries.DeleteSession(sessionCookie.Value)
 	if err != nil {
-		http.Error(w, "could not logout", http.StatusInternalServerError)
+		utilities.ErrorJSON(w, http.StatusInternalServerError, "could not logout")
 		return
 	}
 	http.SetCookie(w, &http.Cookie{
@@ -164,9 +160,5 @@ func LogoutHandler(w http.ResponseWriter, r *http.Request) {
 		SameSite: http.SameSiteLaxMode,
 	})
 
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(map[string]string{
-		"message": "logout successful",
-	})
+	utilities.WriteJSON(w, http.StatusOK, map[string]string{"message": "logout successful"})
 }

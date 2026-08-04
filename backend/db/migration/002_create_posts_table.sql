@@ -3,9 +3,8 @@ CREATE TABLE IF NOT EXISTS posts (
     userID INTEGER NOT NULL,
     title TEXT NOT NULL,
     content TEXT NOT NULL,
+    category TEXT NOT NULL,
 
     FOREIGN KEY (userID) REFERENCES users(id)
 );
-
-
 

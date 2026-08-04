@@ -1,24 +1,25 @@
 package structures
 
 type Post struct {
-	ID      int    `json:"id"`
-	UserID  int    `json:"user_ID"`
-	Title   string `json:"title"`
-	Content string `json:"content"`
+	ID       int    `json:"id"`
+	UserID   int    `json:"user_ID"`
+	Title    string `json:"title"`
+	Content  string `json:"content"`
+	Category string `json:"category"`
 }
 
 type NewPost struct {
-	Title   string `json:"title"`
-	Content string `json:"content"`
+	Title    string `json:"title"`
+	Content  string `json:"content"`
+	Category string `json:"category"`
 }
 
 type FeedPost struct {
 	ID       int    `json:"id"`
 	Title    string `json:"title"`
 	Content  string `json:"content"`
+	Category string `json:"category"`
 	Username string `json:"username"`
-
-	//? we can add here created at to know when this post create
 }
 
 type Comment struct {

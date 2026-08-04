@@ -4,7 +4,7 @@ export async function getCurrentUser() {
   try {
     const response = await fetch("/api/session", {
       method: "GET",
-      credentials: "same-orgin", // this is tha http://localhost:8080  the origin have three things like protocol and domain and port
+      credentials: "same-origin", // this is tha http://localhost:8080  the origin have three things like protocol and domain and port
     });
 
     if (!response.ok) {
@@ -17,7 +17,7 @@ export async function getCurrentUser() {
 
     return data.user; // this is user data from data
   } catch (error) {
-    console.error("Faild to check sesstion:", error);
+    console.error("Failed to check session:", error);
     return null;
   }
 }

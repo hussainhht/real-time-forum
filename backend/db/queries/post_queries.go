@@ -9,10 +9,10 @@ import (
 // * ------------------------------------------------
 // *----------POST SECTION -------------------------
 // *------------------------------------------------
-const insert_post = `INSERT INTO posts (userID ,title, content) VALUES (?,?,?)`
+const insert_post = `INSERT INTO posts (userID, title, content, category) VALUES (?,?,?,?)`
 
-func InsertPost(UserID int, Title string, Content string) (int64, error) {
-	result, err := global.Database.Exec(insert_post, UserID, Title, Content)
+func InsertPost(UserID int, Title string, Content string, Category string) (int64, error) {
+	result, err := global.Database.Exec(insert_post, UserID, Title, Content, Category)
 
 	if err != nil {
 		return 0, err
@@ -40,15 +40,15 @@ func PostExists(postID int) (bool, error) {
 	return true, nil
 }
 
-const get_posts_list = `
-SELECT posts.id, posts.title, posts.content, users.username
+const feed_posts = `
+SELECT posts.id, posts.title, posts.content, posts.category, users.username
 FROM posts
 JOIN users ON posts.userID = users.id
 ORDER BY posts.id DESC
 `
 
-func GetPostFeed() ([]structures.FeedPost, error) {
-	rows, err := global.Database.Query(get_posts_list)
+func PostsFeed() ([]structures.FeedPost, error) {
+	rows, err := global.Database.Query(feed_posts)
 	if err != nil {
 		return nil, err
 	}
@@ -57,25 +57,26 @@ func GetPostFeed() ([]structures.FeedPost, error) {
 	var posts []structures.FeedPost
 	for rows.Next() {
 		var p structures.FeedPost
-		err := rows.Scan(&p.ID, &p.Title, &p.Content, &p.Username)
+		err := rows.Scan(&p.ID, &p.Title, &p.Content, &p.Category, &p.Username)
 		if err != nil {
 			return nil, err
 		}
 		posts = append(posts, p)
 	}
 
-	if err := rows.Err(); err != nil { //to check if an error occurred during iteration and did not appear.
+	if err := rows.Err(); err != nil { //to check if an error occurred during iteration over the rows and didnt appear.
 		return nil, err
 	}
 
 	return posts, nil
 }
 
-const getPost = `
+const get_post_by_id = `
 SELECT
 	posts.id,
 	posts.title,
 	posts.content,
+	posts.category,
 	users.username
 FROM posts
 JOIN users ON posts.userID = users.id
@@ -85,12 +86,13 @@ WHERE posts.id = ?
 func GetPostByID(postID int) (*structures.FeedPost, error) {
 	var post structures.FeedPost
 	err := global.Database.QueryRow(
-		getPost,
+		get_post_by_id,
 		postID,
 	).Scan(
 		&post.ID,
 		&post.Title,
 		&post.Content,
+		&post.Category,
 		&post.Username,
 	)
 
@@ -170,4 +172,3 @@ func FeedCommentsByPostID(postID int) ([]structures.FeedComment, error) {
 	return comments, nil
 
 }
-

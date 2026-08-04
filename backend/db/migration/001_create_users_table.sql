@@ -3,11 +3,9 @@ CREATE TABLE IF NOT EXISTS users  (
     first_name TEXT NOT NULL,
     last_name TEXT NOT NULL,
     age INTEGER NOT NULL,
-    phone_number TEXT UNIQUE NOT NULL,
     gender TEXT NOT NULL,
     email TEXT NOT NULL UNIQUE,
     username TEXT NOT NULL UNIQUE,
     password TEXT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
-
