@@ -1,4 +1,4 @@
-async function apiFetch(url, options = {}) {
+export async function apiFetch(url, options = {}) {
     let { method = "GET", headers = {}, body } = options;
     if (body && typeof body === "object") {
         body = JSON.stringify(body);
@@ -43,6 +43,7 @@ export function escapeHtml(value) {
     const div = document.createElement("div");
     div.textContent = value ? value : "";
     return div.innerHTML;
-}// it is for escaping HTML to prevent XSS attacks by converting special characters to their HTML entities.
+}
 //todo check it when we run the code in the browser, it should be tested to ensure that it correctly escapes HTML and prevents XSS attacks.
+
 
