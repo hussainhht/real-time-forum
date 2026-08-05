@@ -17,7 +17,7 @@ func Router() *http.ServeMux {
 
 	// user
 	mux.HandleFunc("GET /api/session", CurrentUserHandler) //*dun
-	mux.HandleFunc("GET /api/chat-users", GetChatUsersHandler) //todo on js
+	mux.HandleFunc("GET /api/chat-users", GetChatUsersHandler) //*dun
 
 	// posts
 	mux.HandleFunc("POST /posts", CreatePostHandler) //todo on js
