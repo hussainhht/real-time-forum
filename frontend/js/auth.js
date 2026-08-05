@@ -8,3 +8,11 @@ export async function getCurrentUser() {
     }
     return result.data.user;
 }
+
+export function setCurrentUser(user) {
+  currentUser = user;
+}
+
+export function clearCurrentUser() {
+  currentUser = null;
+}

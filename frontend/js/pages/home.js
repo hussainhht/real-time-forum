@@ -1,4 +1,5 @@
-import { renderPage, clearCurrentUser } from "./router.js";
+import { renderPage } from "./router.js";
+import { clearCurrentUser } from "./auth.js";
 import { apiFetch } from "./api.js";
 
 export async function homepage(app, currentUser) {
@@ -37,7 +38,7 @@ export async function homepage(app, currentUser) {
   const postsContainer = document.getElementById("posts-container");
 
   try {
-    const response = await apiFetch("/posts", {
+    const response = await fetch("/posts", {
       method: "GET",
     });
 
@@ -77,7 +78,7 @@ export async function homepage(app, currentUser) {
 
   }catch (error) {
     console.error("Error in the posts:", error);
-    postsContainer.innerHTML = "feailed to load posts";
+    postsContainer.innerHTML = "Failed to load posts";
   } 
 
 

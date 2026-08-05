@@ -1,10 +1,13 @@
 import { LoginPage } from "./pages/login.js";
 import { RegisterPage } from "./pages/register.js";
 import { homepage } from "./pages/home.js";
+import { renderErrorPage } from "./pages/error.js";
 import { getCurrentUser } from "./auth.js";
 
 export const app = document.getElementById("app");
 let currentUser = null;
+
+
 
 export function renderPage(page) {
 
@@ -32,7 +35,7 @@ export function renderPage(page) {
       break;
     default:
       if (currentUser) {
-        homepage(app, currentUser);
+        renderErrorPage(app, "404 Not Found", "The page you are looking for does not exist.");
       } else {
         LoginPage(app);
       }
@@ -48,12 +51,4 @@ export async function startApp() {
     return;
   }
   renderPage("login");
-}
-
-export function setCurrentUser(user) {
-  currentUser = user;
-}
-
-export function clearCurrentUser() {
-  currentUser = null;
 }

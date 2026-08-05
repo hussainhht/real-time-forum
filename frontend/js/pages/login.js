@@ -1,6 +1,6 @@
-import { renderPage, setCurrentUser } from "../router.js";
+import { renderPage } from "../router.js";
 import { apiFetch, errorMessage } from "../api.js";
-import { getCurrentUser } from "../auth.js";
+import { getCurrentUser, setCurrentUser } from "../auth.js";
 
 export function LoginPage(app) {
   app.innerHTML = `
