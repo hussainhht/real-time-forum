@@ -1,12 +1,13 @@
-import { app, renderPage , setCurrentUser} from "./router.js";
+import { renderPage, setCurrentUser } from "../router.js";
+import { apiFetch, errorMessage } from "../api.js";
+import { getCurrentUser } from "../auth.js";
 
 export function LoginPage(app) {
-  app.innerHTML = ` 
-    
+  app.innerHTML = `
     <main class="auth-page">
       <section class="auth-card">
         <form id="login-form">
-          <h1>login</h1>
+          <h1>Login</h1>
           <input
             type="text"
             id="identifier"
@@ -16,19 +17,22 @@ export function LoginPage(app) {
           <input
             type="password"
             id="password"
-            placeholder="password"
+            placeholder="Password"
             required
           />
           <button type="submit">Login</button>
         </form>
-            <button type="button" id="go-register">Creat a new acount</button>
+        <button type="button" id="go-register" class="login-link">
+          Create a new account
+        </button>
+        <p id="login-message" class="form-message"></p>
       </section>
     </main>
-    
-    `;
+  `;
 
   const form = document.getElementById("login-form");
   const registerButton = document.getElementById("go-register");
+
   form.addEventListener("submit", handleLogin);
 
   registerButton.addEventListener("click", () => {
@@ -37,47 +41,35 @@ export function LoginPage(app) {
 }
 
 async function handleLogin(event) {
-  event.preventDefault(); //* this for cansling the prouser defolt stings >> like spase tap things the man perpos here is to cansle the relode after submit the form .. in spa when the user refresh the page the html desper for a moment then when the user try to supmit the form it refrish but we can cansle this when we using this  in the coect spa this is must not happend ....
+  event.preventDefault();
 
   const identifier = document.getElementById("identifier").value.trim();
-
   const password = document.getElementById("password").value;
+  const message = document.getElementById("login-message");
 
   if (identifier === "" || password === "") {
-    console.log("this is not ok you need to fill all fields");
+    message.textContent = "Please fill all fields";
     return;
   }
 
-  const response = await fetch("/login", {
-    //* why we need asinc and awiat here becose the respons need time if we remove it the result will be <pending> soo we need to add await to wwait the sarver respons then conteno and there ways to the  Promise (pending,fulfilled,rejected) this will store in the varible if we dont use asinc and await >>
+  const result = await apiFetch("/login", {
     method: "POST",
-
-    //? this is wtifht heders in the page
-    headers: {
-      "Content-Type": "application/json",
-    },
-
-    body: JSON.stringify({
-      identifier,
-      password,
-    }),
+    body: { identifier, password },
   });
 
-  if (!response.ok) {
-    const errorMassage = await response.text();
-    console.log("Login faild:", errorMassage);
+  if (!result.ok) {
+    message.textContent = errorMessage(result, "Login failed");
     return;
   }
 
   const user = await getCurrentUser();
 
-  if(!user){
-    console.error("Login succeeded but session could not be verfied");
+  if (!user) {
+    message.textContent = "Login succeeded but session could not be verified";
     return;
   }
 
+  message.textContent = "";
   setCurrentUser(user);
   renderPage("home");
-
-  console.log("Login successful");
 }

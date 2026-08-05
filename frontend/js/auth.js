@@ -1,23 +1,10 @@
 //auth
+import { apiFetch } from "./api.js";
 
 export async function getCurrentUser() {
-  try {
-    const response = await fetch("/api/session", {
-      method: "GET",
-      credentials: "same-origin", // this is tha http://localhost:8080  the origin have three things like protocol and domain and port
-    });
-
-    if (!response.ok) {
-      return null;
+    const result = await apiFetch("api/session");
+    if (!result.ok || !result.data || !result.data.authenticated) {
+        return null;
     }
-    const data = await response.json();
-    if (!data.authenticated) {
-      return null;
-    }
-
-    return data.user; // this is user data from data
-  } catch (error) {
-    console.error("Failed to check session:", error);
-    return null;
-  }
+    return result.data.user;
 }

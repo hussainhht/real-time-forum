@@ -1,4 +1,5 @@
 import { renderPage, clearCurrentUser } from "./router.js";
+import { apiFetch } from "./api.js";
 
 export async function homepage(app, currentUser) {
   app.innerHTML = `
@@ -14,17 +15,16 @@ export async function homepage(app, currentUser) {
         loading...
       </div>
     </div>
-    
     `;
 
   const logoutButton = document.getElementById("logout-button");
   logoutButton.addEventListener("click", async () => {
-    const respons = await fetch("/logout", {
+    const response = await fetch("/logout", {
       method: "POST",
       credentials: "include",
     });
 
-    if (!respons.ok) {
+    if (!response.ok) {
       return;
     }
     clearCurrentUser();
@@ -37,7 +37,7 @@ export async function homepage(app, currentUser) {
   const postsContainer = document.getElementById("posts-container");
 
   try {
-    const response = await fetch("/posts", {
+    const response = await apiFetch("/posts", {
       method: "GET",
     });
 

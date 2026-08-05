@@ -1,4 +1,5 @@
-import { renderPage } from "./router.js";
+import { renderPage } from "../router.js";
+import { apiFetch, errorMessage } from "../api.js";
 
 export function RegisterPage(app) {
   app.innerHTML = `
@@ -41,15 +42,14 @@ export function RegisterPage(app) {
           />
           <button class="primary-button" type="submit">Register</button>
         </form>
-     <button id="go-login" type="button" class="login-link">
-        Already have an account?
-      </button>
+        <button id="go-login" type="button" class="login-link">
+          Already have an account?
+        </button>
       </section>
-
 
       <p id="register-message" class="form-message"></p>
     </main>
-    `;
+  `;
 
   const form = document.getElementById("register-form");
   const loginButton = document.getElementById("go-login");
@@ -82,37 +82,20 @@ async function handleRegister(event) {
     username === "" ||
     password === ""
   ) {
-    message.textContent = "pless fill all fiealds";
+    message.textContent = "Please fill all fields";
     return;
   }
 
-  try {
-    const response = await fetch("/register", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
+  const result = await apiFetch("/register", {
+    method: "POST",
+    body: { first_name, last_name, age, gender, email, username, password },
+  });
 
-      body: JSON.stringify({
-        first_name,
-        last_name,
-        age,
-        gender,
-        email,
-        username,
-        password,
-      }),
-    });
-
-    if (!response.ok) {
-      const errorMassage = await response.text();
-      message.textContent = errorMassage;
-      return;
-    }
-    message.textContent = "Registerion succesful";
-    renderPage("login");
-  } catch (error) {
-    console.log(error);
-    message.textContent = "could not coonect to sevver";
+  if (!result.ok) {
+    message.textContent = errorMessage(result, "Registration failed");
+    return;
   }
+
+  message.textContent = "Registration successful";
+  renderPage("login");
 }

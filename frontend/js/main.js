@@ -1,4 +1,3 @@
-import { renderPage } from "./router.js";
-// import { homepage } from "./home.js";
+import { startApp } from "./router.js";
 
-renderPage("login");
+startApp();
