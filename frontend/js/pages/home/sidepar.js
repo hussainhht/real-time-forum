@@ -1,4 +1,5 @@
 import { escapeHtml, apiFetch, errorMessage } from "../../api.js";
+import { messagePage, loadMessagesForUser } from "./message.js";
 
 export function renderSidebar(users = [], selectedUserId = null) {
   return `
@@ -25,16 +26,13 @@ export async function updateSidebarUsers() {
   const usersList = document.getElementById("chat-users-list");
   const message = document.getElementById("message");
 
-  
   if (!usersList) {
     console.error("Users list element not found");
     return;
   }
 
-
   const response = await apiFetch("/api/chat-users", {
     method: "GET",
-
   });
 
   if (!document.body.contains(message)) {
@@ -43,7 +41,7 @@ export async function updateSidebarUsers() {
   }
 
   if (!response.ok) {
-    message.textContent = errorMessage(response, "Failed to load users");  
+    message.textContent = errorMessage(response, "Failed to load users");
     return;
   }
 
@@ -59,7 +57,7 @@ function renderChatUsers(users, usersList) {
   usersList.innerHTML = users
     .map(
       (user) => `
-            <button type="button" class="chat-user-btn" data-user-id="${escapeHtml(user.id)}">
+            <button type="button" class="chat-user-btn" data-user-id="${escapeHtml(user.id)}" data-username="${escapeHtml(user.username)}">
             <span class="chat-user-circle"></span>
 
             <span class="chat-user-name">${escapeHtml(user.username)}</span>
@@ -75,53 +73,29 @@ function setupChatUserEvents() {
   const userButtons = document.querySelectorAll(".chat-user-btn");
 
   userButtons.forEach((button) => {
-    button.addEventListener("click", () => {
+    button.addEventListener("click", async () => {
       const userId = Number(button.dataset.userId);
+      const username = button.dataset.username;
+
       if (!Number.isInteger(userId) || userId <= 0) {
         console.error("Invalid user ID");
         return;
       }
-      loadMessagesForUser(userId);
+
+      const homeContainer = document.getElementById("home-container");
+      if (!homeContainer) {
+        console.error("Home container not found");
+        return;
+      }
+
+      const user = {
+        id: userId,
+        username: username,
+      };
+
+      homeContainer.innerHTML = messagePage(user);
+
+      await loadMessagesForUser(userId);
     });
   });
-}
-
-async function loadMessagesForUser(userId) {
-  const messagesContainer = document.getElementById("messages-container");
-
-  if (!messagesContainer) {
-    console.error("Messages container not found");
-    return;
-  }
-
-  messagesContainer.textContent = "Loading messages...";
-
-  const response = await apiFetch(`/api/messages/${userId}`);
-
-  if (!response.ok) {
-    messagesContainer.innerHTML = `<p class="chat-error">${errorMessage(response, "Failed to load messages")}</p>`;
-    return;
-  }
-  const messages = Array.isArray(response.data) ? response.data : [];
-
-  renderMessages(messages, messagesContainer);
-}
-
-function renderMessages(messages, messagesContainer) {
-  if (messages.length === 0) {
-    messagesContainer.innerHTML = `<p class="empty-chat">No messages found</p>`;
-    return;
-  }
-
-  messagesContainer.innerHTML = messages
-    .map(
-      (message) => `
-            <div class="chat-message">
-                <span class="chat-message-sender">${escapeHtml(message.sender_id)}</span>
-                <span class="chat-message-content">${escapeHtml(message.content)}</span>
-                <span class="chat-message-timestamp">${escapeHtml(message.created_at)}</span>
-            </div>
-        `,
-    )
-    .join("");
 }

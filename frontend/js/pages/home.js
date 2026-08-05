@@ -1,21 +1,28 @@
 import { renderPage } from "./router.js";
 import { clearCurrentUser } from "./auth.js";
 import { apiFetch } from "./api.js";
+import { sidebar } from "./pages/home/sidepar.js";
+import { topbar } from "./pages/home/topbar.js";
+import { feedPage } from "./pages/home/feed.js";
+
 
 export async function homepage(app, currentUser) {
   app.innerHTML = `
-
     <div id="home-page">
+      ${sidebar()}
+      >
+      <section class="home-main">
+        ${topbar(currentUser)}
+
+        <main id="home-content">
+          ${feedPage()}
+        </main>
+      </section>
       <button id="logout-button" type="button">
         Logout
       </button>
-
-      <hr>
-      <h2>posts</h2>
-      <div id="posts-container">
-        loading...
-      </div>
     </div>
+
     `;
 
   const logoutButton = document.getElementById("logout-button");
@@ -31,7 +38,6 @@ export async function homepage(app, currentUser) {
     clearCurrentUser();
     renderPage("login");
   });
-
 
   //get posts
 
@@ -73,14 +79,11 @@ export async function homepage(app, currentUser) {
       postElement.append(titleElement, contentElement, authorElement);
 
       postsContainer.appendChild(postElement);
-
     });
-
-  }catch (error) {
+  } catch (error) {
     console.error("Error in the posts:", error);
     postsContainer.innerHTML = "Failed to load posts";
-  } 
+  }
 
-
-  //todo create post form 
+  //todo create post form
 }
