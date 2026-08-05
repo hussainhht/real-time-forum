@@ -43,4 +43,6 @@ export function escapeHtml(value) {
     const div = document.createElement("div");
     div.textContent = value ? value : "";
     return div.innerHTML;
-}
+}// it is for escaping HTML to prevent XSS attacks by converting special characters to their HTML entities.
+//todo check it when we run the code in the browser, it should be tested to ensure that it correctly escapes HTML and prevents XSS attacks.
+
