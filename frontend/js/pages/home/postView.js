@@ -1,8 +1,8 @@
-import { apiFetch, errorMessage } from "../../api.js";
+import { apiFetch, errorMessage } from "../api.js";
 import { navigateHome } from "../home.js";
 
 export async function renderPostView(box, postId) {
-    if (!postId || postId.trim() === "") {
+    if (postId === undefined || postId === null || String(postId).trim() === "") {
         navigateHome("feed");
         return;
     }
@@ -157,4 +157,3 @@ async function handleAddComment(event, postId) {
 
     renderComments(postId);
 }
-

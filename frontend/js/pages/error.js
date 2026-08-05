@@ -1,17 +1,15 @@
-import {escapeHtml} from '../../api.js';
+import {escapeHtml} from '../api.js';
 
-export function renderErrorPage({ status, message }) {
-    const app = document.getElementById("app");
-    
-    if (!app) {
-        console.error('App element not found');
-        return;
-    }
+export function renderErrorPage(app, status, message) {
+  if (!app) {
+    console.error('App element not found');
+    return;
+  }
 
-    app.innerHTML = `
+  app.innerHTML = `
     <main class = "error-page">
       <h1 class="error-status">
-        ${escapeHtml(String(status))} 
+        ${escapeHtml(String(status))} //! check this
       </h1>
 
       <p class="error-message">
@@ -26,11 +24,10 @@ export function renderErrorPage({ status, message }) {
 
     </main>`
 
-    const homeButton = document.getElementById("error-home-button");
+  const homeButton = document.getElementById("error-home-button");
 
-    homeButton.addEventListener("click", () => {
-        window.location.href = "/";
-    })
+  homeButton.addEventListener("click", () => {
+      window.location.href = "/"; //? what is better? this or rendering?
+  })
 
 }
-
