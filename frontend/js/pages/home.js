@@ -14,7 +14,7 @@ export async function homepage(app, currentUser) {
       <section class="home-main">
         ${topbar(currentUser)}
 
-        <main id="home-content">
+        <main id="home-container">
           ${feedPage()}
         </main>
       </section>

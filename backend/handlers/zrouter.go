@@ -20,17 +20,17 @@ func Router() *http.ServeMux {
 	mux.HandleFunc("GET /api/chat-users", GetChatUsersHandler) //*dun
 
 	// posts
-	mux.HandleFunc("POST /posts", CreatePostHandler) //todo on js
-	mux.HandleFunc("GET /posts", FeedPostHandler) //todo on js
-	mux.HandleFunc("GET /posts/{id}", GetPostHandler) //todo on js
+	mux.HandleFunc("POST /posts", CreatePostHandler) //*dun
+	mux.HandleFunc("GET /posts", FeedPostHandler) //*dun
+	mux.HandleFunc("GET /posts/{id}", GetPostHandler) //*dun
 
 	// comments
 	mux.HandleFunc("POST /posts/{id}/comments", CreateCommentsHandler) //todo on js
 	mux.HandleFunc("GET /posts/{id}/comments", FeedCommentsHandler) //todo on js
 
 	// messages
-	mux.HandleFunc("GET /messages/{userID}", FeedMessagesHandler) //todo on js
-	mux.HandleFunc("POST /messages", MessageHandler) //todo on js
+	mux.HandleFunc("GET /api/messages/{userID}", FeedMessagesHandler) //*dun
+	mux.HandleFunc("POST /api/messages", MessageHandler) //todo on js
 
 	// websocket
 	// mux.HandleFunc("GET /ws", WebSocketHandler) // todo

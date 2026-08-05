@@ -1,5 +1,5 @@
 import { escapeHtml, apiFetch, errorMessage } from "../../api.js";
-import { messagePage, loadMessagesForUser } from "./message.js";
+import { renderMessagePage, loadMessagesForUser } from "./message.js";
 
 export function renderSidebar(users = [], selectedUserId = null) {
   return `
@@ -93,7 +93,7 @@ function setupChatUserEvents() {
         username: username,
       };
 
-      homeContainer.innerHTML = messagePage(user);
+      homeContainer.innerHTML = renderMessagePage(user);
 
       await loadMessagesForUser(userId);
     });

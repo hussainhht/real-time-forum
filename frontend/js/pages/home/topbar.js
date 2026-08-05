@@ -1,4 +1,4 @@
-import {escapeHTML} from "../api.js";
+import {escapeHtml} from "../../api.js";
 
 export function renderTopbar(currentUser) {
   return `

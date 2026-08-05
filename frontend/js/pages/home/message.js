@@ -1,6 +1,6 @@
 import { apiFetch, errorMessage, escapeHtml } from "../../api.js";
 
-export function massagePage() {
+export function renderMessagePage(user) {
   return `
   <section class="message-page">
       <header class="message-header">
@@ -34,26 +34,25 @@ export function massagePage() {
 }
 
 export async function loadMessagesForUser(userId) {
-  const messagesContainer = document.getElementById("messages-container");
+  const message_list = document.getElementById("messages-list");
 
-  if (!messagesContainer) {
+  if (!message_list) {
     console.error("Messages container not found");
     return;
   }
 
-  messagesContainer.textContent = "Loading messages...";
+  message_list.textContent = "Loading messages...";
 
   const response = await apiFetch(`/api/messages/${userId}`);
 
   if (!response.ok) {
-    messagesContainer.innerHTML = `<p class="chat-error">${errorMessage(response, "Failed to load messages")}</p>`;
+    message_list.innerHTML = `<p class="chat-error">${errorMessage(response, "Failed to load messages")}</p>`;
     return;
   }
   const messages = Array.isArray(response.data) ? response.data : [];
 
-  renderMessages(messages, messagesContainer);
+  renderMessages(messages, message_list);
 }
-
 
 function renderMessages(messages, messagesContainer) {
   if (messages.length === 0) {
