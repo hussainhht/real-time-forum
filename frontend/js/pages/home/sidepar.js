@@ -1,9 +1,7 @@
-import {escapeHtml} from '../../api.js';
+import { escapeHtml } from "../../api.js";
 
 export function renderSidebar(users = [], selectedUserId = null) {
-
-
-    return `
+  return `
     <aside class="sidebar">
       <div class="chat-sidebar-header">
         <div class="chat-sidebar-avatar"></div>
@@ -15,8 +13,7 @@ export function renderSidebar(users = [], selectedUserId = null) {
           users.length
             ? users
                 .map((user) => {
-                  const isActive =
-                    user.id === selectedUserId ? "active" : "";
+                  const isActive = user.id === selectedUserId ? "active" : "";
 
                   return `
                     <button
@@ -35,8 +32,5 @@ export function renderSidebar(users = [], selectedUserId = null) {
             : `<p class="chat-empty">No users yet</p>`
         }
       </div>
-    </aside>` ;
-
-
-    
+    </aside>`;
 }
