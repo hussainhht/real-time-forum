@@ -1,5 +1,5 @@
-import { apiFetch, errorMessage } from "../api.js";
-import { navigateHome } from "../home.js"; //todo
+import { apiFetch, errorMessage } from "../../api.js";
+import { navigateHome } from "../home.js";
 
 export async function renderFeedView(box) {
     box.innerHTML = `

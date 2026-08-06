@@ -11,6 +11,7 @@ type Users struct {
 	Email       string 	`json:"email"`
 	Username    string 	`json:"username"`
 	Password    string 	`json:"password"`
+	ConfirmPassword string 	`json:"confirm_password"`
 	// CreatedAt   time.Time `json:"created_at"`
 }
 

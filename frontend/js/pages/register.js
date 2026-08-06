@@ -40,6 +40,12 @@ export function RegisterPage(app) {
             placeholder="Password"
             required
           />
+          <input
+          type="password"
+           id="confirm-password"
+           placeholder="Confirm password"
+           required
+          />
           <button class="primary-button" type="submit">Register</button>
         </form>
         <button id="go-login" type="button" class="login-link">
@@ -70,9 +76,9 @@ async function handleRegister(event) {
   const gender = document.getElementById("gender").value;
   const email = document.getElementById("email").value.trim();
   const username = document.getElementById("username").value.trim();
-  const password = document.getElementById("password").value.trim();
+  const password = document.getElementById("password").value;
   const message = document.getElementById("register-message");
-
+  const confirm_password = document.getElementById("confirm-password").value;
   if (
     first_name === "" ||
     last_name === "" ||
@@ -80,19 +86,30 @@ async function handleRegister(event) {
     gender === "" ||
     email === "" ||
     username === "" ||
-    password === ""
+    password === "" ||
+    confirm_password === ""
   ) {
     message.textContent = "Please fill all fields";
     return;
   }
 
-  const result = await apiFetch("/register", {
+  if (!Number.isInteger(age) || age <= 0) {
+    message.textContent = "Please enter a valid age";
+    return;
+  }
+
+  if (password !== confirm_password) {
+    message.textContent = "Passwords do not match";
+    return;
+  }
+
+  const response = await apiFetch("/register", {
     method: "POST",
-    body: { first_name, last_name, age, gender, email, username, password },
+    body: { first_name, last_name, age, gender, email, username, password, confirm_password },
   });
 
-  if (!result.ok) {
-    message.textContent = errorMessage(result, "Registration failed");
+  if (!response.ok) {
+    message.textContent = errorMessage(response, "Registration failed");
     return;
   }
 

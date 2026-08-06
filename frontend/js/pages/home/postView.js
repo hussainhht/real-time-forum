@@ -1,4 +1,4 @@
-import { apiFetch, errorMessage } from "../api.js";
+import { apiFetch, errorMessage } from "../../api.js";
 import { navigateHome } from "../home.js";
 
 export async function renderPostView(box, postId) {

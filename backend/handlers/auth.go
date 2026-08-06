@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"log"
 	"net/http"
 	"realtime/backend/db/queries"
 	"realtime/backend/global/structures"
@@ -61,9 +62,9 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 		Name:     "session_id",
 		Value:    sessionID,
 		Expires:  expiresAt,
-		HttpOnly: true,						//?! this do not allow the cookie to be accessed by JavaScript, which helps protect against cross-site scripting (XSS) attacks.
+		HttpOnly: true, //?! this do not allow the cookie to be accessed by JavaScript, which helps protect against cross-site scripting (XSS) attacks.
 		Path:     "/",
-		SameSite: http.SameSiteLaxMode,		//?! this helps protect against cross-site request forgery (CSRF) attacks by restricting how cookies are sent with cross-site requests.
+		SameSite: http.SameSiteLaxMode, //?! this helps protect against cross-site request forgery (CSRF) attacks by restricting how cookies are sent with cross-site requests.
 	})
 
 	utilities.WriteJSON(w, http.StatusOK, map[string]string{"username": user.Username})
@@ -97,6 +98,7 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 	User.Gender = strings.TrimSpace(User.Gender)
 	User.Username = strings.TrimSpace(User.Username)
 	User.Email = strings.TrimSpace(User.Email)
+	User.ConfirmPassword = strings.TrimSpace(User.ConfirmPassword)
 
 	if User.Age <= 0 ||
 		User.Email == "" ||
@@ -104,13 +106,19 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 		User.LastName == "" ||
 		User.Gender == "" ||
 		User.Username == "" ||
-		User.Password == "" {
+		User.Password == "" ||
+		User.ConfirmPassword == "" {
 		utilities.ErrorJSON(w, http.StatusBadRequest, "missing required fields")
 		return
 	}
 
 	if len(User.Password) < 8 {
 		utilities.ErrorJSON(w, http.StatusBadRequest, "the password can't be less then 8 characters")
+		return
+	}
+
+	if User.Password != User.ConfirmPassword {
+		utilities.ErrorJSON(w, http.StatusBadRequest, "passwords do not match")
 		return
 	}
 
@@ -129,6 +137,7 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 	err = queries.InsertUser(User.Username, User.FirstName, User.LastName, User.Age, User.Gender, User.Email, User.Password)
 	if err != nil {
 		utilities.ErrorJSON(w, http.StatusInternalServerError, "faild to create user")
+		log.Println("Error inserting user:", err) // Log the error for debugging purposes
 		return
 	}
 

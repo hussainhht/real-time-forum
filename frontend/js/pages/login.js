@@ -52,13 +52,13 @@ async function handleLogin(event) {
     return;
   }
 
-  const result = await apiFetch("/login", {
+  const response = await apiFetch("/login", {
     method: "POST",
     body: { identifier, password },
   });
 
-  if (!result.ok) {
-    message.textContent = errorMessage(result, "Login failed");
+  if (!response.ok) {
+    message.textContent = errorMessage(response, "Login failed");
     return;
   }
 
