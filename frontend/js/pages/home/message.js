@@ -2,10 +2,8 @@ import { apiFetch, errorMessage, escapeHtml } from "../../api.js";
 
 export function renderMessagePage(user) {
   return `
-  <section class="message-page">
+    <section class="message-page">
       <header class="message-header">
-        <div class="message-user-avatar"></div>
-
         <div>
           <h2>${escapeHtml(user.username)}</h2>
           <span class="message-user-status">Chat</span>
@@ -13,7 +11,9 @@ export function renderMessagePage(user) {
       </header>
 
       <div id="messages-list" class="messages-list">
-        <p class="messages-loading">Loading messages...</p>
+        <p class="messages-loading">
+          Loading messages...
+        </p>
       </div>
 
       <form id="message-form" class="message-form">
@@ -30,7 +30,7 @@ export function renderMessagePage(user) {
         </button>
       </form>
     </section>
-    `;
+  `;
 }
 
 export async function loadMessagesForUser(userId) {
@@ -64,11 +64,66 @@ function renderMessages(messages, messagesContainer) {
     .map(
       (message) => `
             <div class="chat-message">
-                <span class="chat-message-sender">${escapeHtml(message.sender_id)}</span>
+                <span class="chat-message-sender">${escapeHtml(message.username)}</span>
                 <span class="chat-message-content">${escapeHtml(message.content)}</span>
-                <span class="chat-message-timestamp">${escapeHtml(message.created_at)}</span>
+                <span class="chat-message-timestamp">${formatTimestamp(message.created_at)}</span>
             </div>
         `,
     )
     .join("");
+}
+
+function formatTimestamp(timestamp) {
+  const date = new Date(timestamp);
+  return date.toLocaleString();
+}
+
+export async function setupMessageForm(userId) {
+  const form = document.getElementById("message-form");
+
+  if (!form) {
+    console.error("Message form not found");
+    return;
+  }
+
+  form.addEventListener("submit", async (event) => {
+    handleMessageFormSubmit(event, userId);
+  });
+
+  await loadMessagesForUser(userId);
+}
+
+async function handleMessageFormSubmit(event, userId) {
+  event.preventDefault();
+
+  const input = document.getElementById("message-input");
+
+  const submitButton = event.target.querySelector("button[type='submit']");
+
+  const content = input.value.trim();
+  if (content === "") {
+    errorMessage("Message content cannot be empty");
+    return;
+  }
+
+  submitButton.disabled = true;
+
+  const response = await apiFetch(`/api/messages/${userId}`, {
+    method: "POST",
+    body: {
+      receiver_id: receiver_id,
+      content: content,
+    },
+  });
+
+  submitButton.disabled = false;
+
+  if (!response.ok) {
+    errorMessage(response, "Failed to send message");
+    return;
+  }
+
+  input.value = "";
+
+  await loadMessagesForUser(userId);
 }
