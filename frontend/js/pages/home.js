@@ -25,6 +25,12 @@ export async function homepage(app, currentUser) {
 
   setupHomeEvents();
 
+  const homeBtn = document.getElementById("home-btn");
+
+  homeBtn.addEventListener("click", () => {
+    navigateHome("feed");
+  });
+
   await updateSidebarUsers();
   await navigateHome("feed");
 }

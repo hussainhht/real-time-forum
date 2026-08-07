@@ -3,6 +3,7 @@ import { RegisterPage } from "./pages/register.js";
 import { homepage } from "./pages/home.js";
 import { renderErrorPage } from "./pages/error.js";
 import { getCurrentUser, currentUser } from "./auth.js";
+import { connectWebsocket } from "./websocket.js";
 
 export const app = document.getElementById("app");
 
@@ -14,6 +15,7 @@ export function renderPage(page) {
     LoginPage(app);
     return;
   }
+
   if (guestPages.includes(page) && currentUser) {
     homepage(app, currentUser);
     return;
@@ -45,7 +47,9 @@ export function renderPage(page) {
 
 export async function startApp() {
   await getCurrentUser();
+
   if (currentUser) {
+    connectWebsocket();
     renderPage("home");
     return;
   }

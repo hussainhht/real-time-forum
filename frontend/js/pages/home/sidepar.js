@@ -3,21 +3,20 @@ import { renderMessagePage, setupMessageForm } from "./message.js";
 
 export function renderSidebar(users = [], selectedUserId = null) {
   return `
-        <aside class="chat-sidebar">
-            <div class="chat-sidebar-header">
-                <h2>Chats</h2>
-            </div>
+    <aside class="chat-sidebar">
+      <div class="chat-sidebar-header">
+        <div class="pages-header">
+          <button id="home-btn" type="button">Home</button>
+        </div>
+        <h2>Chats</h2>
+      </div>
 
-            <div
-                id="chat-users-list"
-                class="chat-users-list"
-            >
-                <p>Loading users...</p>
-            </div>
+      <div id="chat-users-list" class="chat-users-list">
+        <p>Loading users...</p>
+      </div>
 
-            <p class="chat-sidebar-footer" id="message"></p>
-
-        </aside>
+      <p class="chat-sidebar-footer" id="message"></p>
+    </aside>
 
     `;
 }
@@ -40,7 +39,8 @@ export async function updateSidebarUsers() {
   }
 
   if (!response.ok) {
-    if (message) message.textContent = errorMessage(response, "Failed to load users");
+    if (message)
+      message.textContent = errorMessage(response, "Failed to load users");
     return;
   }
 

@@ -1,6 +1,9 @@
 package handlers
 
-import "net/http"
+import (
+	"net/http"
+	"realtime/backend/ws"
+)
 
 func Router() *http.ServeMux {
 	mux := http.NewServeMux()
@@ -12,28 +15,28 @@ func Router() *http.ServeMux {
 
 	// auth
 	mux.HandleFunc("POST /register", RegisterHandler) //*dun
-	mux.HandleFunc("POST /login", LoginHandler) //*dun
-	mux.HandleFunc("POST /logout", LogoutHandler) //* dun
+	mux.HandleFunc("POST /login", LoginHandler)       //*dun
+	mux.HandleFunc("POST /logout", LogoutHandler)     //* dun
 
 	// user
-	mux.HandleFunc("GET /api/session", CurrentUserHandler) //*dun
+	mux.HandleFunc("GET /api/session", CurrentUserHandler)     //*dun
 	mux.HandleFunc("GET /api/chat-users", GetChatUsersHandler) //*dun
 
 	// posts
-	mux.HandleFunc("POST /posts", CreatePostHandler) //*dun
-	mux.HandleFunc("GET /posts", FeedPostHandler) //*dun
+	mux.HandleFunc("POST /posts", CreatePostHandler)  //*dun
+	mux.HandleFunc("GET /posts", FeedPostHandler)     //*dun
 	mux.HandleFunc("GET /posts/{id}", GetPostHandler) //*dun
 
 	// comments
 	mux.HandleFunc("POST /posts/{id}/comments", CreateCommentsHandler) //todo on js
-	mux.HandleFunc("GET /posts/{id}/comments", FeedCommentsHandler) //todo on js
+	mux.HandleFunc("GET /posts/{id}/comments", FeedCommentsHandler)    //todo on js
 
 	// messages
 	mux.HandleFunc("GET /api/messages/{userID}", FeedMessagesHandler) //*dun
-	mux.HandleFunc("POST /api/messages", MessageHandler) //todo on js
+	mux.HandleFunc("POST /api/messages", MessageHandler)              //todo on js
 
 	// websocket
-	// mux.HandleFunc("GET /ws", WebSocketHandler) // todo
+	mux.HandleFunc("GET /ws", ws.WebSocketHandler)
 
 	return mux
 }
