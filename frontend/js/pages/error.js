@@ -1,4 +1,4 @@
-import {escapeHtml} from '../api.js';
+import { escapeHtml } from '../api.js';
 
 export function renderErrorPage(app, status, message) {
   if (!app) {
@@ -7,9 +7,9 @@ export function renderErrorPage(app, status, message) {
   }
 
   app.innerHTML = `
-    <main class = "error-page">
+    <main class="error-page">
       <h1 class="error-status">
-        ${escapeHtml(String(status))} //! check this
+        ${escapeHtml(String(status))}
       </h1>
 
       <p class="error-message">
@@ -17,17 +17,17 @@ export function renderErrorPage(app, status, message) {
       </p>
 
       <div class="error-actions">
-        <button type="submit" id="error-home-button">
+        <button type="button" id="error-home-button">
           back to home
         </button>
       </div>
 
-    </main>`
+    </main>`;
 
   const homeButton = document.getElementById("error-home-button");
 
   homeButton.addEventListener("click", () => {
-      window.location.href = "/"; //? what is better? this or rendering?
-  })
+      window.location.href = "/";
+  });
 
 }

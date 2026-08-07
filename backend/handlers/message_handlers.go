@@ -13,7 +13,6 @@ import (
 
 func MessageHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
-		// w.Header().Set("Allow", http.MethodPost)		//! i dont think we need this, because we are already sending the error message in the next line
 		utilities.ErrorJSON(w, http.StatusMethodNotAllowed, "method not allowed")
 		return
 	}
@@ -53,7 +52,9 @@ func MessageHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	messageID, err := queries.InsertMessage(sender.ID, sendMessage.ReceiverId, sendMessage.Content, time.Now())
+	now := time.Now()
+
+	messageID, err := queries.InsertMessage(sender.ID, sendMessage.ReceiverId, sendMessage.Content, now)
 	if err != nil {
 		utilities.ErrorJSON(w, http.StatusInternalServerError, "could not save message")
 		return
@@ -63,13 +64,14 @@ func MessageHandler(w http.ResponseWriter, r *http.Request) {
 		ID:         messageID,
 		SenderId:   sender.ID,
 		ReceiverId: sendMessage.ReceiverId,
+		Username:   sender.Username,
 		Content:    sendMessage.Content,
-		CreatedAt:  time.Now(),
+		CreatedAt:  now,
 	}
 
 	err = utilities.WriteJSON(w, http.StatusCreated, response)
 	if err != nil {
-		log.Println("could not encode message:", err)		//? is this true to be only in the terminal?
+		log.Println("could not encode message:", err)
 	}
 }
 
@@ -103,10 +105,10 @@ func FeedMessagesHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	beforeID := 0 //? last message loaded, if 0 then load the latest messages
-	beforeValue := r.URL.Query().Get("before") //?  /messages/5?before=41			//! also check how is this exactly working, READ ABOUT IT
+	beforeID := 0
+	beforeValue := r.URL.Query().Get("before")
 
-	if beforeValue != "" { //! when will this stop?
+	if beforeValue != "" {
 		parsed, err := strconv.Atoi(beforeValue)
 		if err != nil || parsed <= 0 {
 			utilities.ErrorJSON(w, http.StatusBadRequest, "invalid before value")
@@ -126,6 +128,6 @@ func FeedMessagesHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err := utilities.WriteJSON(w, http.StatusOK, messages); err != nil {
-		log.Println("could not encode messages:", err) //! only in terminal?
+		log.Println("could not encode messages:", err)
 	}
 }

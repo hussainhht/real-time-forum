@@ -1,5 +1,5 @@
 import { escapeHtml, apiFetch, errorMessage } from "../../api.js";
-import { renderMessagePage, loadMessagesForUser } from "./message.js";
+import { renderMessagePage, setupMessageForm } from "./message.js";
 
 export function renderSidebar(users = [], selectedUserId = null) {
   return `
@@ -35,21 +35,20 @@ export async function updateSidebarUsers() {
     method: "GET",
   });
 
-  if (!document.body.contains(message)) {
-    console.error("Message element is no longer in the DOM");
+  if (!document.body.contains(usersList)) {
     return;
   }
 
   if (!response.ok) {
-    message.textContent = errorMessage(response, "Failed to load users");
+    if (message) message.textContent = errorMessage(response, "Failed to load users");
     return;
   }
 
   const users = Array.isArray(response.data) ? response.data : [];
-  renderChatUsers(users, usersList);
+  renderUsersList(users, usersList);
 }
 
-function renderChatUsers(users, usersList) {
+function renderUsersList(users, usersList) {
   if (users.length === 0) {
     usersList.innerHTML = "<p>No users found</p>";
     return;
@@ -95,7 +94,7 @@ function setupChatUserEvents() {
 
       homeContainer.innerHTML = renderMessagePage(user);
 
-      await loadMessagesForUser(userId);
+      await setupMessageForm(userId);
     });
   });
 }

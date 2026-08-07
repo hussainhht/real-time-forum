@@ -29,6 +29,7 @@ export function renderMessagePage(user) {
           Send
         </button>
       </form>
+      <p id="chat-form-message" class="form-message"></p>
     </section>
   `;
 }
@@ -44,6 +45,8 @@ export async function loadMessagesForUser(userId) {
   message_list.textContent = "Loading messages...";
 
   const response = await apiFetch(`/api/messages/${userId}`);
+
+  if (!document.body.contains(message_list)) return;
 
   if (!response.ok) {
     message_list.innerHTML = `<p class="chat-error">${errorMessage(response, "Failed to load messages")}</p>`;
@@ -71,6 +74,8 @@ function renderMessages(messages, messagesContainer) {
         `,
     )
     .join("");
+
+  messagesContainer.scrollTop = messagesContainer.scrollHeight;
 }
 
 function formatTimestamp(timestamp) {
@@ -86,7 +91,7 @@ export async function setupMessageForm(userId) {
     return;
   }
 
-  form.addEventListener("submit", async (event) => {
+  form.addEventListener("submit", (event) => {
     handleMessageFormSubmit(event, userId);
   });
 
@@ -97,29 +102,31 @@ async function handleMessageFormSubmit(event, userId) {
   event.preventDefault();
 
   const input = document.getElementById("message-input");
+  const message = document.getElementById("chat-form-message");
 
   const submitButton = event.target.querySelector("button[type='submit']");
 
   const content = input.value.trim();
   if (content === "") {
-    errorMessage("Message content cannot be empty");
     return;
   }
 
   submitButton.disabled = true;
 
-  const response = await apiFetch(`/api/messages/${userId}`, {
+  const response = await apiFetch(`/api/messages`, {
     method: "POST",
     body: {
-      receiver_id: receiver_id,
+      receiver_id: userId,
       content: content,
     },
   });
 
   submitButton.disabled = false;
 
+  if (!document.body.contains(input)) return;
+
   if (!response.ok) {
-    errorMessage(response, "Failed to send message");
+    if (message) message.textContent = errorMessage(response, "Failed to send message");
     return;
   }
 

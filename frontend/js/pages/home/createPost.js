@@ -18,7 +18,7 @@ export function renderCreatePostView(box) {
             <button type="submit">Post</button>
         </form>
         <p id="create-post-message" class="form-message"></p>
-    `; //! make sure option one is working well
+    `;
 
     document
     .getElementById("create-post-form")

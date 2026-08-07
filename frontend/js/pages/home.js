@@ -12,7 +12,7 @@ export async function homepage(app, currentUser) {
   app.innerHTML = `
     <div id="home-page">
       ${renderSidebar()}
-      
+
       <section class="home-main">
         ${renderTopbar(currentUser)}
 
@@ -30,14 +30,13 @@ export async function homepage(app, currentUser) {
 }
 
 function setupHomeEvents() {
-  const logoutButton = document.getElementById("logout-button");
+  document
+  .getElementById("logout-button")
+  .addEventListener("click", handleLogout);
 
-  logoutButton.addEventListener("click", handleLogout);
-
-  const createPostButton = document.getElementById("create-post-button");
-  createPostButton.addEventListener("click", () => {
-    navigateHome("create-post");
-  });
+  document
+  .getElementById("create-post-button")
+  .addEventListener("click",navigateHome("create-post"));
 }
 
 async function handleLogout() {
@@ -66,10 +65,10 @@ export async function navigateHome(view, data = {}) {
       renderFeedView(container);
       break;
     case "create-post":
-      renderCreatePostView(container, data.postId);
+      renderCreatePostView(container);
       break;
     case "post":
-      renderPostView(container);
+      renderPostView(container, data.postId);
       break;
     default:
       renderFeedView(container);

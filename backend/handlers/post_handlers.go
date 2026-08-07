@@ -104,6 +104,7 @@ func FeedPostHandler(w http.ResponseWriter, r *http.Request) {
 
 	posts, err := queries.PostsFeed()
 	if err != nil {
+		log.Println("PostsFeed error:", err)
 		utilities.ErrorJSON(w, http.StatusInternalServerError, "there is a problem with database")
 		return
 	}

@@ -36,19 +36,21 @@ func InsertMessage(senderID, receiverID int, content string, createdAt time.Time
 
 const getMessageBetweenUsers = `
 SELECT
-	id,
-	sender_id,
-	receiver_id,
-	content,
-	created_at
+	messages.id,
+	messages.sender_id,
+	messages.receiver_id,
+	users.username,
+	messages.content,
+	messages.created_at
 	FROM messages
+	JOIN users ON users.id = messages.sender_id
 	WHERE (
-		(sender_id = ? AND receiver_id = ?)
+		(messages.sender_id = ? AND messages.receiver_id = ?)
 		OR
-		(sender_id = ? AND receiver_id = ?)
+		(messages.sender_id = ? AND messages.receiver_id = ?)
 	)
-	AND (? = 0 OR id < ?)
-	ORDER BY id DESC
+	AND (? = 0 OR messages.id < ?)
+	ORDER BY messages.id DESC
 	LIMIT 10
 `
 
@@ -78,6 +80,7 @@ func FeedMessagesBetweenUsers(currentUserID, otherUserID, beforeID int) ( //befo
 			&message.ID,
 			&message.SenderId,
 			&message.ReceiverId,
+			&message.Username,
 			&message.Content,
 			&message.CreatedAt,
 		)
@@ -97,4 +100,15 @@ func FeedMessagesBetweenUsers(currentUserID, otherUserID, beforeID int) ( //befo
 	}
 
 	return messages, nil
+}
+
+const get_username_by_id = `SELECT username FROM users WHERE id = ?`
+
+func GetUsernameByID(userID int) (string, error) {
+	var username string
+	err := global.Database.QueryRow(get_username_by_id, userID).Scan(&username)
+	if err != nil {
+		return "", err
+	}
+	return username, nil
 }
