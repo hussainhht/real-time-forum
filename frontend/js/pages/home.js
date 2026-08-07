@@ -36,7 +36,9 @@ function setupHomeEvents() {
 
   document
   .getElementById("create-post-button")
-  .addEventListener("click",navigateHome("create-post"));
+  .addEventListener("click", (click) => {
+    navigateHome("create-post")
+  });
 }
 
 async function handleLogout() {
