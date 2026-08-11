@@ -30,7 +30,7 @@ export function connectWebsocket() {
       case "user_offline":
         console.log("User offline:", data.content);
         break;
-      case "private_message":
+      case "new_message":
         console.log("New message:", data.content);
         break;
     }
