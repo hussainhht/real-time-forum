@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"realtime/backend/db/queries"
 	"realtime/backend/global/utilities"
+	"realtime/backend/ws"
 )
 
 func CurrentUserHandler(w http.ResponseWriter, r *http.Request) {
@@ -63,6 +64,10 @@ func GetChatUsersHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		utilities.ErrorJSON(w, http.StatusInternalServerError, "could not load users")
 		return
+	}
+
+	for i := range users {
+		users[i].Online = ws.GlobalHub.IsOnline(users[i].ID)
 	}
 
 	if err := utilities.WriteJSON(w, http.StatusOK, users); err != nil {

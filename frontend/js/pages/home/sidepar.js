@@ -57,7 +57,7 @@ function renderUsersList(users, usersList) {
     .map(
       (user) => `
             <button type="button" class="chat-user-btn" data-user-id="${escapeHtml(user.id)}" data-username="${escapeHtml(user.username)}">
-            <span class="chat-user-circle"></span>
+            <span class="chat-user-circle ${user.online ? "online" : "offline"}"></span>
 
             <span class="chat-user-name">${escapeHtml(user.username)}</span>
             </button>

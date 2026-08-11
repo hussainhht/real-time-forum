@@ -3,41 +3,61 @@ package ws
 import (
 	"log"
 	"net/http"
+	"realtime/backend/db/queries"
 	"realtime/backend/global/utilities"
 
 	"github.com/gorilla/websocket"
 )
 
-var upgrader = websocket.Upgrader{}
+var upgrader = websocket.Upgrader{
+	// CheckOrigin left at default (same-origin only) since this is
+	// served from the same host as the frontend.
+}
 
 func WebSocketHandler(w http.ResponseWriter, r *http.Request) {
-
-	conn, err := upgrader.Upgrade(w, r, nil)
+	// Authenticate BEFORE upgrading, same as the HTTP handlers.
+	sessionCookie, err := r.Cookie("session_id")
 	if err != nil {
-		utilities.ErrorJSON(w, http.StatusInternalServerError, "failed to upgrade to websocket")
-		log.Println("Failed to upgrade to websocket:", err)
+		utilities.ErrorJSON(w, http.StatusUnauthorized, "you must login first")
 		return
 	}
 
-	defer conn.Close()
-
-	for {
-		messageType, message, err := conn.ReadMessage()
-		//messageType this for text or binary ,, binary is for file and text is for text
-		if err != nil {
-			log.Println("Error reading message:", err)
-			return
-		}
-
-		log.Printf("Received message: %s", message) //if you want to know waht is the massage
-
-		err = conn.WriteMessage(messageType, message)
-		if err != nil {
-			utilities.ErrorJSON(w, http.StatusInternalServerError, "failed to write message to websocket")
-			log.Println("Error writing message:", err)
-			return
-		}
-
+	user, err := queries.GetUserBySession(sessionCookie.Value)
+	if err != nil {
+		utilities.ErrorJSON(w, http.StatusUnauthorized, "invalid session")
+		return
 	}
 
+	conn, err := upgrader.Upgrade(w, r, nil)
+	if err != nil {
+		log.Println("Failed to upgrade to websocket:", err)
+		return
+	}
+	defer conn.Close()
+
+	GlobalHub.Register(user.ID, conn)
+	log.Printf("user %s (id %d) connected via websocket", user.Username, user.ID)
+
+	GlobalHub.Broadcast(Event{
+		Type:    "user_online",
+		Content: map[string]any{"user_id": user.ID, "username": user.Username},
+	}, user.ID)
+
+	defer func() {
+		GlobalHub.Unregister(user.ID, conn)
+		GlobalHub.Broadcast(Event{
+			Type:    "user_offline",
+			Content: map[string]any{"user_id": user.ID, "username": user.Username},
+		}, user.ID)
+		log.Printf("user %s (id %d) disconnected", user.Username, user.ID)
+	}()
+
+
+	for {
+		_, _, err := conn.ReadMessage()
+		if err != nil {
+			break
+		}
+	}
+	
 }

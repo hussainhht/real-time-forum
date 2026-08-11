@@ -10,7 +10,7 @@ export function renderMessagePage(user) {
         </div>
       </header>
 
-      <div id="messages-list" class="messages-list">
+      <div id="messages-list" class="messages-list" data-user-id="${escapeHtml(user.id)}">
         <p class="messages-loading">
           Loading messages...
         </p>

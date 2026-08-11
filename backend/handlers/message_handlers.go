@@ -6,6 +6,7 @@ import (
 	"realtime/backend/db/queries"
 	"realtime/backend/global/structures"
 	"realtime/backend/global/utilities"
+	"realtime/backend/ws"
 	"strconv"
 	"strings"
 	"time"
@@ -68,6 +69,11 @@ func MessageHandler(w http.ResponseWriter, r *http.Request) {
 		Content:    sendMessage.Content,
 		CreatedAt:  now,
 	}
+
+	ws.GlobalHub.SendToUser(sendMessage.ReceiverId, ws.Event{
+		Type:    "new_message",
+		Content: response,
+	})
 
 	err = utilities.WriteJSON(w, http.StatusCreated, response)
 	if err != nil {

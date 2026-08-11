@@ -30,5 +30,5 @@ type Sessions struct {
 type ChatUser struct {
 	ID       int    `json:"id"`
 	Username string `json:"username"`
-	// Online   bool   `json:"online"` this need to add when we make WS for know who is online and who is ofline 
+	Online   bool   `json:"online"`
 }

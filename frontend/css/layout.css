@@ -184,3 +184,11 @@
     display: none;
   }
 }
+
+.chat-user-circle.online {
+  background-color: var(--color-success);
+}
+
+.chat-user-circle.offline {
+  background-color: var(--color-border);
+}

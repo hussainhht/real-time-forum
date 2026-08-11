@@ -1,6 +1,14 @@
 export let socket;
 
 export function connectWebsocket() {
+  if (
+    socket &&
+    (socket.readyState === WebSocket.OPEN ||
+      socket.readyState === WebSocket.CONNECTING)
+  ) {
+    return;
+  }
+
   socket = new WebSocket(`ws://${window.location.host}/ws`);
 
   console.log("2- socket created:", socket);
@@ -11,7 +19,23 @@ export function connectWebsocket() {
   };
 
   socket.onmessage = (event) => {
-    console.log("Message from server:", event.data);
+    const data = JSON.parse(event.data);
+
+    console.log("Websocket event :", data);
+
+    switch (data.type) {
+      case "user_online":
+        console.log("User online :", data.content);
+        break;
+      case "user_offline":
+        console.log("User offline:", data.content);
+        break;
+      case "private_message":
+        console.log("New message:", data.content);
+        break;
+    }
+
+    console.log("Message from server:", data);
   };
 
   socket.onclose = () => {
