@@ -43,17 +43,17 @@ async function handleCreatePost(event) {
         return;
     }
 
-    const result = await apiFetch("/posts", {
+    const respons = await apiFetch("/posts", {
         method: "POST",
         body: { title, content, category },
     });
 
     if (!document.body.contains(message)) return;
 
-    if (!result.ok) {
-        message.textContent = errorMessage(result, "Failed to create post");
+    if (!respons.ok) {
+        message.textContent = errorMessage(respons, "Failed to create post");
         return;
     }
 
-    navigateHome("post", { postId: result.data.id });
+    navigateHome("post", { postId: respons.data.id });
 }

@@ -35,47 +35,57 @@ export function renderMessagePage(user) {
 }
 
 export async function loadMessagesForUser(userId) {
-  const message_list = document.getElementById("messages-list");
+  const messagesContainer = document.getElementById("messages-list");
 
-  if (!message_list) {
+  if (!messagesContainer) {
     console.error("Messages container not found");
     return;
   }
 
-  message_list.textContent = "Loading messages...";
+  messagesContainer.textContent = "Loading messages...";
 
   const response = await apiFetch(`/api/messages/${userId}`);
 
-  if (!document.body.contains(message_list)) return;
+  if (!document.body.contains(messagesContainer)) return;
 
   if (!response.ok) {
-    message_list.innerHTML = `<p class="chat-error">${errorMessage(response, "Failed to load messages")}</p>`;
+    messagesContainer.innerHTML = `<p class="chat-error">${errorMessage(response, "Failed to load messages")}</p>`;
     return;
   }
   const messages = Array.isArray(response.data) ? response.data : [];
 
-  renderMessages(messages, message_list);
+  renderMessages(messages, messagesContainer);
 }
 
-function renderMessages(messages, messagesContainer) {
+export function renderMessages(messages, messagesContainer) {
   if (messages.length === 0) {
     messagesContainer.innerHTML = `<p class="empty-chat">No messages found</p>`;
     return;
   }
 
   messagesContainer.innerHTML = messages
-    .map(
-      (message) => `
-            <div class="chat-message">
-                <span class="chat-message-sender">${escapeHtml(message.username)}</span>
-                <span class="chat-message-content">${escapeHtml(message.content)}</span>
-                <span class="chat-message-timestamp">${formatTimestamp(message.created_at)}</span>
-            </div>
-        `,
-    )
+    .map((message) => buildMessageBubbleHtml(message))
     .join("");
 
   messagesContainer.scrollTop = messagesContainer.scrollHeight;
+}
+
+function buildMessageBubbleHtml(message) {
+  return `
+    <div class="chat-message">
+      <span class="chat-message-sender">
+        ${escapeHtml(message.username)}
+      </span>
+
+      <span class="chat-message-content">
+        ${escapeHtml(message.content)}
+      </span>
+
+      <span class="chat-message-timestamp">
+        ${formatTimestamp(message.created_at)}
+      </span>
+    </div>
+  `;
 }
 
 function formatTimestamp(timestamp) {
@@ -126,11 +136,31 @@ async function handleMessageFormSubmit(event, userId) {
   if (!document.body.contains(input)) return;
 
   if (!response.ok) {
-    if (message) message.textContent = errorMessage(response, "Failed to send message");
+    if (message)
+      message.textContent = errorMessage(response, "Failed to send message");
     return;
   }
 
   input.value = "";
 
-  await loadMessagesForUser(userId);
+  const messagesContainer = document.getElementById("messages-list");
+  if (messagesContainer) {
+    appendMessage(response.data);
+  }
+}
+
+
+export function appendMessage(message) {
+  const messagesContainer = document.getElementById("messages-list");
+  if (!messagesContainer) return;
+
+  const emptyState = messagesContainer.querySelector(".empty-chat");
+  if (emptyState) emptyState.remove();
+
+  messagesContainer.insertAdjacentHTML(
+    "beforeend",
+    buildMessageBubbleHtml(message),
+  );
+
+  messagesContainer.scrollTop = messagesContainer.scrollHeight;
 }

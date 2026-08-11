@@ -56,7 +56,7 @@ function renderUsersList(users, usersList) {
   usersList.innerHTML = users
     .map(
       (user) => `
-            <button type="button" class="chat-user-btn" data-user-id="${escapeHtml(user.id)}" data-username="${escapeHtml(user.username)}">
+            <button type="button" class="chat-user-btn" data-user-id="${escapeHtml(user.id)}" data-username="${escapeHtml(user.username)}" data-online="${user.online ? "true" : "false"}">
             <span class="chat-user-circle ${user.online ? "online" : "offline"}"></span>
 
             <span class="chat-user-name">${escapeHtml(user.username)}</span>
@@ -75,6 +75,7 @@ function setupChatUserEvents() {
     button.addEventListener("click", async () => {
       const userId = Number(button.dataset.userId);
       const username = button.dataset.username;
+      const isOnline = button.dataset.online === "true";
 
       if (!Number.isInteger(userId) || userId <= 0) {
         console.error("Invalid user ID");
@@ -90,6 +91,7 @@ function setupChatUserEvents() {
       const user = {
         id: userId,
         username: username,
+        online: isOnline,
       };
 
       homeContainer.innerHTML = renderMessagePage(user);

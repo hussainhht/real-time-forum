@@ -52,6 +52,10 @@ func MessageHandler(w http.ResponseWriter, r *http.Request) {
 		utilities.ErrorJSON(w, http.StatusBadRequest, "message content not valid")
 		return
 	}
+	if !ws.GlobalHub.IsOnline(sendMessage.ReceiverId) {
+		utilities.ErrorJSON(w, http.StatusBadRequest, "you can only message online users")
+		return
+	}
 
 	now := time.Now()
 

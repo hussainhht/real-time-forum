@@ -1,3 +1,5 @@
+import { appendMessage } from "./pages/home/message.js";
+
 export let socket;
 
 export function connectWebsocket() {
@@ -11,11 +13,8 @@ export function connectWebsocket() {
 
   socket = new WebSocket(`ws://${window.location.host}/ws`);
 
-  console.log("2- socket created:", socket);
-
   socket.onopen = () => {
     console.log("WebSocket is connected now");
-    // socket.send("hello from browser");
   };
 
   socket.onmessage = (event) => {
@@ -25,24 +24,60 @@ export function connectWebsocket() {
 
     switch (data.type) {
       case "user_online":
-        console.log("User online :", data.content);
+        updateUserOnlineDot(data.content.user_id, true);
         break;
       case "user_offline":
-        console.log("User offline:", data.content);
+        updateUserOnlineDot(data.content.user_id, false);
         break;
       case "new_message":
-        console.log("New message:", data.content);
+        handleIncomingMessage(data.content);
         break;
     }
-
-    console.log("Message from server:", data);
   };
 
   socket.onclose = () => {
-    console.log("Websockent close now");
+    console.log("WebSocket closed now");
   };
 
   socket.onerror = (error) => {
     console.error("WebSocket error :", error);
   };
+}
+
+function updateUserOnlineDot(userId, isOnline) {
+  const buttons = document.getElementsByClassName("chat-user-btn");
+
+  let userButton = null;
+  for (let i = 0; i < buttons.length; i++) {
+    if (Number(buttons[i].dataset.userId) === Number(userId)) {
+      userButton = buttons[i];
+      break;
+    }
+  }
+  if (!userButton) return;
+
+  const dots = userButton.getElementsByClassName("online-user-circle");
+  if (dots.length === 0) return;
+
+  const dot = dots[0];
+
+  if (isOnline) {
+    dot.classList.remove("offline");
+    dot.classList.add("online");
+  } else {
+    dot.classList.remove("online");
+    dot.classList.add("offline");
+  }
+}
+
+function handleIncomingMessage(message) {
+  const messagesList = document.getElementById("messages-list");
+  if (!messagesList) return;
+
+  const openChatUserId = Number(messagesList.dataset.userId);
+  const senderId = Number(message.sender_id);
+
+  if (openChatUserId !== senderId) return;
+
+  appendMessage(message);
 }
