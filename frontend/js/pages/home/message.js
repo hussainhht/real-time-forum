@@ -1,5 +1,9 @@
 import { apiFetch, errorMessage, escapeHtml } from "../../api.js";
 
+let oldestMessageId = 0;
+let isLoadingOlder = false;
+let hasMoreMessages = true;
+
 export function renderMessagePage(user) {
   return `
     <section class="message-page">
@@ -34,7 +38,7 @@ export function renderMessagePage(user) {
   `;
 }
 
-export async function loadMessagesForUser(userId) {
+export async function loadMessagesForUser(userId, beforeId = 0) {
   const messagesContainer = document.getElementById("messages-list");
 
   if (!messagesContainer) {
@@ -42,9 +46,14 @@ export async function loadMessagesForUser(userId) {
     return;
   }
 
-  messagesContainer.textContent = "Loading messages...";
+  // messagesContainer.textContent = "Loading messages...";
 
-  const response = await apiFetch(`/api/messages/${userId}`);
+  if (beforeId === 0) {
+    messagesContainer.textContent = "Loading messages...";
+  }
+  const response = await apiFetch(
+    `/api/messages/${userId}?before_id=${beforeId}`,
+  );
 
   if (!document.body.contains(messagesContainer)) return;
 
@@ -52,9 +61,41 @@ export async function loadMessagesForUser(userId) {
     messagesContainer.innerHTML = `<p class="chat-error">${errorMessage(response, "Failed to load messages")}</p>`;
     return;
   }
+
   const messages = Array.isArray(response.data) ? response.data : [];
 
-  renderMessages(messages, messagesContainer);
+  if (beforeId === 0) {
+    renderMessages(messages, messagesContainer);
+    if (messages.length > 0) {
+      oldestMessageId = messages[0].id;
+    }
+    hasMoreMessages = messages.length === 10;
+    return;
+  }
+
+  prependMessages(messages, messagesContainer);
+
+  if (messages.length > 0) {
+    oldestMessageId = messages[0].id;
+  }
+
+  if (messages.length < 10) {
+    hasMoreMessages = false;
+  }
+}
+
+async function loadOlderMessages(userId) {
+  if (isLoadingOlder) return;
+  if (!hasMoreMessages) return;
+  if (oldestMessageId === 0) return;
+
+  isLoadingOlder = true;
+
+  try {
+    await loadMessagesForUser(userId, oldestMessageId);
+  } finally {
+    isLoadingOlder = false;
+  }
 }
 
 export function renderMessages(messages, messagesContainer) {
@@ -95,17 +136,31 @@ function formatTimestamp(timestamp) {
 
 export async function setupMessageForm(userId) {
   const form = document.getElementById("message-form");
+  const messagesContainer = document.getElementById("messages-list");
 
-  if (!form) {
-    console.error("Message form not found");
+  if (!form || !messagesContainer) {
+    console.error("Message form or messages container not found");
     return;
   }
+
+  oldestMessageId = 0;
+  isLoadingOlder = false;
+  hasMoreMessages = true;
 
   form.addEventListener("submit", (event) => {
     handleMessageFormSubmit(event, userId);
   });
 
   await loadMessagesForUser(userId);
+
+  messagesContainer.addEventListener(
+    "scroll",
+    throttle(() => {
+      if (messagesContainer.scrollTop <= 50) {
+        loadOlderMessages(userId);
+      }
+    }, 200),
+  );
 }
 
 async function handleMessageFormSubmit(event, userId) {
@@ -149,7 +204,6 @@ async function handleMessageFormSubmit(event, userId) {
   }
 }
 
-
 export function appendMessage(message) {
   const messagesContainer = document.getElementById("messages-list");
   if (!messagesContainer) return;
@@ -163,4 +217,44 @@ export function appendMessage(message) {
   );
 
   messagesContainer.scrollTop = messagesContainer.scrollHeight;
+}
+
+function prependMessages(messages, messagesContainer) {
+  if (messages.length === 0) {
+    hasMoreMessages = false;
+    return;
+  }
+
+  const oldScrollHeight = messagesContainer.scrollHeight;
+  const oldScrollTop = messagesContainer.scrollTop;
+
+  const oldMessagesHTML = messages
+    .map((message) => buildMessageBubbleHtml(message))
+    .join("");
+
+  messagesContainer.insertAdjacentHTML(
+    "afterbegin",
+    oldMessagesHTML
+  );
+
+  const newScrollHeight = messagesContainer.scrollHeight;
+
+  messagesContainer.scrollTop =
+    oldScrollTop + (newScrollHeight - oldScrollHeight);
+}
+
+function throttle(callback, delay) {
+  let waiting = false;
+
+  return (...args) => {
+    if (waiting) return;
+
+    callback(...args);
+
+    waiting = true;
+
+    setTimeout(() => {
+      waiting = false;
+    }, delay);
+  };
 }

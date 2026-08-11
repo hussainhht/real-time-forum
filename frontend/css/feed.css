@@ -7,34 +7,51 @@
 }
 
 .post-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
   background-color: var(--color-surface);
-  border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
-  padding: 14px var(--space-lg);
+  padding: var(--space-lg) var(--space-xl);
+  box-shadow: var(--shadow-sm);
   cursor: pointer;
+  transition: box-shadow var(--transition-base), transform var(--transition-base);
 }
 
 .post-card:hover {
-  background-color: var(--color-hover);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
 }
 
+/* signature: monospace hashtag chip, like a hand-labeled tag */
 .post-category {
-  display: inline-block;
-  background-color: var(--color-bg);
-  border-radius: var(--radius-sm);
-  padding: 2px var(--space-sm);
-  font-size: 0.75rem;
-  margin-bottom: var(--space-sm);
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.02em;
+  color: var(--color-accent-dark);
+  background-color: var(--color-champagne);
+  border-radius: var(--radius-pill);
+  padding: 4px var(--space-md);
+  margin-bottom: var(--space-xs);
+}
+
+.post-category::before {
+  content: "#";
+  margin-right: 2px;
+  opacity: 0.6;
 }
 
 .post-card h3 {
-  margin: 0 0 6px 0;
+  font-size: 1.15rem;
 }
 
 .post-card p {
-  margin: 0;
   color: var(--color-text-muted);
-  font-size: 0.9rem;
+  font-size: 0.88rem;
+  font-family: var(--font-mono);
 }
 
 /* ---------- Create post ---------- */
@@ -42,20 +59,15 @@
 #create-post-form {
   display: flex;
   flex-direction: column;
-  gap: var(--space-sm);
+  gap: var(--space-md);
   background-color: var(--color-surface);
-  border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
-  padding: var(--space-lg);
+  padding: var(--space-xl);
+  box-shadow: var(--shadow-sm);
 }
 
 #create-post-form textarea {
-  min-height: 120px;
-  resize: vertical;
-  font-family: inherit;
-  padding: 10px;
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-sm);
+  min-height: 140px;
 }
 
 /* ---------- Post detail / comments ---------- */
@@ -63,44 +75,67 @@
 #back-to-feed {
   width: auto;
   background: none;
-  border: none;
-  color: var(--color-primary);
+  box-shadow: none;
+  color: var(--color-accent);
+  font-weight: 600;
   padding: 0 0 var(--space-md) 0;
   font-size: 0.95rem;
 }
 
+#back-to-feed:hover {
+  box-shadow: none;
+  text-decoration: underline;
+}
+
 #post-detail {
+  display: flex;
+  flex-direction: column;
   background-color: var(--color-surface);
-  border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
-  padding: var(--space-xl);
+  padding: var(--space-2xl);
+  box-shadow: var(--shadow-sm);
+}
+
+#post-detail h2 {
+  font-size: 1.4rem;
+  margin-top: var(--space-xs);
+}
+
+#post-detail > p:nth-of-type(1) {
+  font-family: var(--font-mono);
+  color: var(--color-text-muted);
+  font-size: 0.85rem;
 }
 
 .post-full-content {
   white-space: pre-wrap;
   color: var(--color-text);
-  margin-top: var(--space-md);
+  margin-top: var(--space-lg);
+  line-height: 1.65;
 }
 
 #comments-section {
-  margin-top: var(--space-xl);
-  border-top: 1px solid var(--color-border-light);
-  padding-top: 15px;
+  margin-top: var(--space-2xl);
+  padding-top: var(--space-lg);
+  border-top: 1px dashed var(--color-border);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
 }
 
 #comments-section h3 {
-  margin-top: 0;
   font-size: 0.95rem;
+  color: var(--color-accent-dark);
 }
 
 .comments-list {
   list-style: none;
-  margin: 0 0 15px 0;
+  margin: 0;
   padding: 0;
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  max-height: 300px;
+  gap: var(--space-sm);
+  max-height: 320px;
   overflow-y: auto;
 }
 
@@ -110,18 +145,24 @@
 }
 
 .comment-item {
-  border-bottom: 1px solid var(--color-border-light);
-  padding-bottom: var(--space-sm);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  background-color: var(--color-surface-sunk);
+  border-radius: var(--radius-md);
+  padding: var(--space-sm) var(--space-md);
 }
 
 .comment-author {
-  font-weight: bold;
-  font-size: 0.85rem;
+  font-weight: 600;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--color-accent-dark);
   margin: 0;
 }
 
 .comment-content {
-  margin: 4px 0 0 0;
+  margin: 0;
 }
 
 #add-comment-form {
@@ -131,12 +172,7 @@
 }
 
 #add-comment-form textarea {
-  min-height: 70px;
-  resize: vertical;
-  font-family: inherit;
-  padding: 10px;
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-sm);
+  min-height: 80px;
 }
 
 @media (max-width: 480px) {

@@ -1,0 +1,150 @@
+/* ==========================================================================
+   COMPONENTS-CHAT — sidebar, chat, feed cards, comments, error page
+   ========================================================================== */
+
+/* ---------- Sidebar surface + user list ---------- */
+.chat-sidebar {
+  background-color: var(--color-surface);
+  border-radius: 0 var(--radius-lg) var(--radius-lg) 0;
+  box-shadow: var(--shadow-medium);
+}
+
+.chat-user-btn {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  width: 100%;
+  min-height: var(--touch-target-min);
+  padding: var(--spacing-xs);
+  border-radius: var(--radius-md);
+  background: none;
+  box-shadow: none;
+  text-align: left;
+}
+
+.chat-user-btn:hover { background-color: var(--color-surface-sunk); }
+
+.chat-user-circle {
+  width: 0.6rem;
+  height: 0.6rem;
+  border-radius: 50%;
+  flex-shrink: 0;
+  background-color: var(--color-border);
+}
+.chat-user-circle.online { background-color: var(--color-success); box-shadow: 0 0 0 3px rgba(76, 175, 125, 0.18); }
+.chat-user-circle.offline { background-color: var(--color-text-faint); }
+.chat-user-name { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+.chat-sidebar-footer {
+  padding: var(--spacing-xs) var(--spacing-sm) var(--spacing-sm);
+  min-height: 1.2em;
+  backdrop-filter: blur(6px);
+  background-color: var(--color-surface-glass);
+}
+.topbar-avatar {
+  width: 2.5rem;
+  height: 2.5rem;
+  aspect-ratio: 1 / 1;
+  border-radius: 50%;
+  background-color: var(--color-rose);
+  box-shadow: var(--shadow-light);
+  flex-shrink: 0;
+}
+/* ---------- Feed: post card + signature tag chip ---------- */
+.post-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-3xs);
+  padding: var(--spacing-sm) var(--spacing-md);
+  background-color: var(--color-surface);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-medium);
+  cursor: pointer;
+  transition: transform var(--transition-base), box-shadow var(--transition-base);
+}
+
+.post-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-lifted); }
+
+.post-category {
+  display: inline-flex;
+  align-self: flex-start;
+  align-items: center;
+  color: var(--color-accent-hover);
+  background-color: var(--color-champagne);
+  border-radius: var(--radius-pill);
+  padding: 0.25em var(--spacing-sm);
+}
+
+.post-category::before { content: "#"; opacity: 0.6; margin-right: 0.1em; }
+/* ---------- Chat message page ---------- */
+.message-page {
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 6rem);
+  background-color: var(--color-surface);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-medium);
+}
+.message-header {
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-bottom: 1px solid var(--color-border-light);
+}
+
+.messages-list {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-sm);
+}
+
+.chat-message {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--spacing-xs);
+  max-width: 85%;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  background-color: var(--color-surface-sunk);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-light);
+}
+.chat-message-timestamp { margin-left: auto; }
+
+.message-form {
+  display: flex;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-top: 1px solid var(--color-border-light);
+}
+/* ---------- Comments ---------- */
+.comments-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+  max-height: 20rem;
+  overflow-y: auto;
+}
+.comment-item {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-3xs);
+  background-color: var(--color-surface-sunk);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-xs) var(--spacing-sm);
+}
+
+/* ---------- Error page ---------- */
+.error-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-xs);
+  min-height: 100vh;
+  text-align: center;
+  padding: var(--spacing-sm);
+}
+.error-actions { margin-top: var(--spacing-sm); }

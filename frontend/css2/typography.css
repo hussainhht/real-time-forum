@@ -1,0 +1,120 @@
+/* ==========================================================================
+   TYPOGRAPHY — fluid type scale and text roles
+   All sizes come from clamp() tokens in root-variables.css, so the scale
+   itself lives there; this file only assigns roles to elements/classes.
+   ========================================================================== */
+
+body {
+  font-family: var(--font-base);
+  font-size: var(--fs-base);
+  font-weight: var(--fw-regular);
+  color: var(--color-text);
+  background-color: var(--color-bg);
+}
+
+h1,
+h2,
+h3 {
+  font-weight: var(--fw-bold);
+  line-height: var(--lh-tight);
+  letter-spacing: -0.01em;
+  color: var(--color-text);
+}
+
+h1 {
+  font-size: var(--fs-2xl);
+}
+
+h2 {
+  font-size: var(--fs-xl);
+}
+
+h3 {
+  font-size: var(--fs-md);
+}
+
+p {
+  font-size: var(--fs-base);
+  color: var(--color-text);
+}
+
+small {
+  font-size: var(--fs-xs);
+}
+
+a {
+  color: var(--color-accent);
+  transition: color var(--transition-fast);
+}
+
+a:hover {
+  color: var(--color-accent-hover);
+}
+
+::selection {
+  background: var(--color-rose);
+  color: var(--color-black);
+}
+
+/* ---------- Monospace accent role ----------
+   Used for tags, usernames, and timestamps — the system's signature detail,
+   echoing a hand-labeled hashtag mark. */
+.text-mono,
+.post-category,
+.comment-author,
+.chat-message-sender,
+.chat-message-timestamp,
+.message-user-status,
+.topbar-user-info small {
+  font-family: var(--font-mono);
+}
+
+.text-muted {
+  color: var(--color-text-muted);
+}
+
+.text-faint {
+  color: var(--color-text-faint);
+}
+
+.form-message {
+  font-size: var(--fs-sm);
+  color: var(--color-danger);
+  text-align: center;
+  min-height: 1.3em;
+}
+
+.auth-subtitle {
+  text-align: center;
+  color: var(--color-text-muted);
+}
+
+.error-status {
+  font-family: var(--font-mono);
+  font-size: var(--fs-2xl);
+  color: var(--color-accent-hover);
+}
+
+.error-message {
+  color: var(--color-text-muted);
+}
+
+.post-full-content {
+  white-space: pre-wrap;
+  line-height: var(--lh-base);
+}
+
+.chat-message-content,
+.comment-content {
+  font-size: var(--fs-base);
+}
+
+.chat-error,
+.empty-chat,
+.messages-loading,
+.comments-list-message {
+  color: var(--color-text-faint);
+  font-size: var(--fs-sm);
+  text-align: center;
+  margin: auto;
+}

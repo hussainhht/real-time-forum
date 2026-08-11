@@ -4,14 +4,16 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 10px;
+  gap: var(--space-sm);
   text-align: center;
   padding: var(--space-lg);
+  background: linear-gradient(180deg, var(--color-champagne) 0%, var(--color-bg) 55%);
 }
 
 .error-status {
-  font-size: 2.5rem;
-  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 3rem;
+  color: var(--color-accent-dark);
 }
 
 .error-message {
@@ -20,9 +22,9 @@
 
 .error-actions button {
   width: auto;
-  padding: 10px var(--space-xl);
-  margin-top: var(--space-sm);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
+  padding: var(--space-sm) var(--space-xl);
+  margin-top: var(--space-md);
+  border-radius: var(--radius-pill);
   background-color: var(--color-surface);
+  box-shadow: var(--shadow-sm);
 }

@@ -1,0 +1,116 @@
+/* ==========================================================================
+   UTILITIES — small, single-purpose helper classes
+   Use sparingly: reach for a utility when a one-off tweak doesn't deserve
+   a new component rule. Never used to replace a component's own styling.
+   ========================================================================== */
+
+.u-flex {
+  display: flex;
+}
+
+.u-flex-col {
+  display: flex;
+  flex-direction: column;
+}
+
+.u-flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.u-flex-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.u-gap-xs {
+  gap: var(--spacing-xs);
+}
+
+.u-gap-sm {
+  gap: var(--spacing-sm);
+}
+
+.u-gap-md {
+  gap: var(--spacing-md);
+}
+
+.u-mt-sm {
+  margin-top: var(--spacing-sm);
+}
+
+.u-mt-md {
+  margin-top: var(--spacing-md);
+}
+
+.u-mb-sm {
+  margin-bottom: var(--spacing-sm);
+}
+
+.u-p-sm {
+  padding: var(--spacing-sm);
+}
+
+.u-p-md {
+  padding: var(--spacing-md);
+}
+
+.u-text-center {
+  text-align: center;
+}
+
+.u-rounded-sm {
+  border-radius: var(--radius-sm);
+}
+
+.u-rounded-md {
+  border-radius: var(--radius-md);
+}
+
+.u-rounded-lg {
+  border-radius: var(--radius-lg);
+}
+
+.u-shadow {
+  box-shadow: var(--shadow-medium);
+}
+
+.u-full-width {
+  width: 100%;
+}
+
+.u-truncate {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.u-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.u-hidden {
+  display: none !important;
+}
+
+@media (max-width: 767px) {
+  .u-hide-mobile {
+    display: none !important;
+  }
+}
+
+@media (min-width: 768px) {
+  .u-hide-tablet-up {
+    display: none !important;
+  }
+}
