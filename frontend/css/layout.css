@@ -13,7 +13,7 @@
   height: 100vh;
   position: sticky;
   top: 0;
-  background-color: var(--color-surface);
+  background-color: #8271acd8;
   border-radius: 0 var(--radius-lg) var(--radius-lg) 0;
   box-shadow: var(--shadow-md);
 }
@@ -32,7 +32,7 @@
 #home-btn {
   width: auto;
   background-color: var(--color-champagne);
-  color: var(--color-ink);
+  color: #4A3F68;
   font-weight: 600;
   border-radius: var(--radius-pill);
   padding: var(--space-xs) var(--space-lg);
@@ -40,27 +40,33 @@
 }
 
 #home-btn:hover {
-  background-color: var(--color-rose);
+  background-color: #FFFFFF;
 }
 
 .chat-sidebar-header h2 {
-  font-size: 1.05rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
   white-space: nowrap;
   overflow: hidden;
-  color: var(--color-accent-dark);
+  color: #EDE8F5;
+  margin: 0;
+  padding-top: var(--space-sm);
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .chat-users-list {
   flex: 1;
   overflow-y: auto;
-  padding: var(--space-sm) var(--space-md);
+  padding: 0 var(--space-lg);
   display: flex;
   flex-direction: column;
-  gap: var(--space-xs);
+  gap: var(--space-sm);
 }
 
 .chat-users-list p {
-  color: var(--color-text-faint);
+  color: rgba(255, 255, 255, 0.7);
   font-size: 0.9rem;
   padding: var(--space-sm);
 }
@@ -71,16 +77,16 @@
   gap: var(--space-sm);
   width: 100%;
   padding: var(--space-sm) var(--space-md);
-  background: none;
+  background-color: var(--color-surface);
   border: none;
   border-radius: var(--radius-md);
-  box-shadow: none;
+  box-shadow: var(--shadow-sm);
   text-align: left;
 }
 
 .chat-user-btn:hover {
-  background-color: var(--color-surface-sunk);
-  box-shadow: none;
+  background-color: var(--color-champagne);
+  box-shadow: var(--shadow-md);
 }
 
 .chat-user-circle {
@@ -111,7 +117,7 @@
 .chat-sidebar-footer {
   padding: var(--space-sm) var(--space-lg) var(--space-lg);
   font-size: 0.8rem;
-  color: var(--color-danger);
+  color: #FFD7D7;
   min-height: 1em;
 }
 
