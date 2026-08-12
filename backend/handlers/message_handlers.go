@@ -116,11 +116,10 @@ func FeedMessagesHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	beforeID := 0
-	beforeValue := r.URL.Query().Get("before")
-
+	beforeValue := r.URL.Query().Get("before_id")
 	if beforeValue != "" {
 		parsed, err := strconv.Atoi(beforeValue)
-		if err != nil || parsed <= 0 {
+		if err != nil || parsed < 0 {
 			utilities.ErrorJSON(w, http.StatusBadRequest, "invalid before value")
 			return
 		}
