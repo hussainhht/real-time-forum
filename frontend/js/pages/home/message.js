@@ -1,4 +1,5 @@
 import { apiFetch, errorMessage, escapeHtml } from "../../api.js";
+import { currentUser } from "../../auth.js";
 
 let oldestMessageId = 0;
 let isLoadingOlder = false;
@@ -45,8 +46,6 @@ export async function loadMessagesForUser(userId, beforeId = 0) {
     console.error("Messages container not found");
     return;
   }
-
-  // messagesContainer.textContent = "Loading messages...";
 
   if (beforeId === 0) {
     messagesContainer.textContent = "Loading messages...";
@@ -112,19 +111,20 @@ export function renderMessages(messages, messagesContainer) {
 }
 
 function buildMessageBubbleHtml(message) {
+  const isOwn = currentUser && message.sender_id === currentUser.id;
+
   return `
-    <div class="chat-message">
+    <div class="chat-message" data-own="${isOwn}">
       <span class="chat-message-sender">
         ${escapeHtml(message.username)}
       </span>
 
-      <span class="chat-message-content">
+      <p class="chat-message-content">
         ${escapeHtml(message.content)}
-      </span>
-
-      <span class="chat-message-timestamp">
-        ${formatTimestamp(message.created_at)}
-      </span>
+        <span class="chat-message-timestamp">
+          ${formatTimestamp(message.created_at)}
+        </span>
+      </p>
     </div>
   `;
 }
@@ -232,10 +232,7 @@ function prependMessages(messages, messagesContainer) {
     .map((message) => buildMessageBubbleHtml(message))
     .join("");
 
-  messagesContainer.insertAdjacentHTML(
-    "afterbegin",
-    oldMessagesHTML
-  );
+  messagesContainer.insertAdjacentHTML("afterbegin", oldMessagesHTML);
 
   const newScrollHeight = messagesContainer.scrollHeight;
 
