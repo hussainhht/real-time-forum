@@ -1,3 +1,9 @@
+let unauthorizedHandler = null;
+
+export function setUnauthorizedHandler(handler) {
+    unauthorizedHandler = handler;
+}
+
 export async function apiFetch(url, options = {}) {
     let { method = "GET", headers = {}, body } = options;
     if (body && typeof body === "object") {
@@ -24,6 +30,12 @@ export async function apiFetch(url, options = {}) {
         data = null;
     }
 
+    // /api/session is expected to return 401 for a logged-out visitor on
+    // first load, that's not a "you got kicked out" event, so it's excluded.
+    if (response.status === 401 && url !== "/api/session" && unauthorizedHandler) {
+        unauthorizedHandler();
+    }
+
     return { ok: response.ok, status: response.status, error: null, data };
 }
 
@@ -44,6 +56,4 @@ export function escapeHtml(value) {
     div.textContent = value ? value : "";
     return div.innerHTML;
 }
-//todo check it when we run the code in the browser, it should be tested to ensure that it correctly escapes HTML and prevents XSS attacks.
-
-
+//todo: check it when we run the code in the browser, it should be tested to ensure that it correctly escapes HTML and prevents XSS attacks.

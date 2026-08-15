@@ -6,6 +6,7 @@ import { renderTopbar } from "../pages/home/topbar.js";
 import { renderFeedView } from "../pages/home/feed.js";
 import { renderCreatePostView } from "../pages/home/createPost.js";
 import { renderPostView } from "../pages/home/postView.js";
+import { disconnectWebsocket } from "../websocket.js";
 
 
 export async function homepage(app, currentUser) {
@@ -56,6 +57,7 @@ async function handleLogout() {
     console.error(errorMessage(response, "Logout failed"));
     return;
   }
+  disconnectWebsocket();
   clearCurrentUser();
   renderPage("login");
 }

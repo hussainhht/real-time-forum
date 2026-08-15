@@ -12,14 +12,30 @@ type Event struct {
 	Content any    `json:"content"`
 }
 
+// client wraps a websocket connection with its own write mutex.
+// gorilla/websocket only supports one concurrent writer per connection;
+// without this, SendToUser and Broadcast could write to the same conn
+// from different goroutines at the same time and corrupt the frame
+// stream (seen client-side as "Invalid frame header" / truncated JSON).
+type client struct {
+	conn    *websocket.Conn
+	writeMu sync.Mutex
+}
+
+func (c *client) writeJSON(v any) error {
+	c.writeMu.Lock()
+	defer c.writeMu.Unlock()
+	return c.conn.WriteJSON(v)
+}
+
 type Hub struct {
 	mu      sync.RWMutex
-	clients map[int]*websocket.Conn
+	clients map[int]*client
 }
 
 func NewHub() *Hub {
 	return &Hub{
-		clients: make(map[int]*websocket.Conn),
+		clients: make(map[int]*client),
 	}
 }
 
@@ -30,16 +46,16 @@ func (h *Hub) Register(userID int, conn *websocket.Conn) {
 	defer h.mu.Unlock()
 
 	if old, exists := h.clients[userID]; exists {
-		old.Close()
+		old.conn.Close()
 	}
-	h.clients[userID] = conn
+	h.clients[userID] = &client{conn: conn}
 }
 
 func (h *Hub) Unregister(userID int, conn *websocket.Conn) {
 	h.mu.Lock()
 	defer h.mu.Unlock()
 
-	if current, exists := h.clients[userID]; exists && current == conn {
+	if current, exists := h.clients[userID]; exists && current.conn == conn {
 		delete(h.clients, userID)
 	}
 }
@@ -64,14 +80,14 @@ func (h *Hub) OnlineUserIDs() []int {
 
 func (h *Hub) SendToUser(userID int, event Event) bool {
 	h.mu.RLock()
-	conn, ok := h.clients[userID]
+	c, ok := h.clients[userID]
 	h.mu.RUnlock()
 
 	if !ok {
 		return false
 	}
 
-	if err := conn.WriteJSON(event); err != nil {
+	if err := c.writeJSON(event); err != nil {
 		log.Println("ws: failed to send to user", userID, ":", err)
 		return false
 	}
@@ -82,11 +98,11 @@ func (h *Hub) Broadcast(event Event, skipUserID int) {
 	h.mu.RLock()
 	defer h.mu.RUnlock()
 
-	for userID, conn := range h.clients {
+	for userID, c := range h.clients {
 		if userID == skipUserID {
 			continue
 		}
-		if err := conn.WriteJSON(event); err != nil {
+		if err := c.writeJSON(event); err != nil {
 			log.Println("ws: failed to broadcast to user", userID, ":", err)
 		}
 	}

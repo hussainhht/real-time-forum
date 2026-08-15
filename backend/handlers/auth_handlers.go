@@ -45,6 +45,12 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	err = queries.DeleteSessionsByUserID(user.ID)
+	if err != nil {
+		utilities.ErrorJSON(w, http.StatusInternalServerError, "error clearing old sessions")
+		return
+	}
+
 	sessionID, err := generateSession()
 	if err != nil {
 		utilities.ErrorJSON(w, http.StatusInternalServerError, "error on generating the session")

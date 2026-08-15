@@ -11,7 +11,6 @@ export function renderMessagePage(user) {
       <header class="message-header">
         <div>
           <h2>${escapeHtml(user.username)}</h2>
-          <span class="message-user-status">Chat</span>
         </div>
       </header>
 

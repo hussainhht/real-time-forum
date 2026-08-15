@@ -107,16 +107,39 @@ func DeleteSession(sessionID string) error {
 	return err
 }
 
+const deleteSessionsByUserID = `
+DELETE FROM sessions
+WHERE user_id = ?
+`
+
+func DeleteSessionsByUserID(userID int) error {
+	_, err := global.Database.Exec(deleteSessionsByUserID, userID)
+	return err
+}
+
 const get_users_for_chat = `
-SELECT id, username
+SELECT
+	users.id,
+	users.username,
+	(
+		SELECT MAX(messages.created_at)
+		FROM messages
+		WHERE (messages.sender_id = users.id AND messages.receiver_id = ?)
+		   OR (messages.sender_id = ? AND messages.receiver_id = users.id)
+	) AS last_message_at
 FROM users
-WHERE id != ?
-ORDER BY LOWER(username) ASC
+WHERE users.id != ?
+ORDER BY
+	last_message_at IS NULL ASC,
+	last_message_at DESC,
+	LOWER(users.username) ASC
 `
 
 func GetUsersForChat(currentUserID int) ([]structures.ChatUser, error) {
 	rows, err := global.Database.Query(
 		get_users_for_chat,
+		currentUserID,
+		currentUserID,
 		currentUserID,
 	)
 	if err != nil {
@@ -128,10 +151,12 @@ func GetUsersForChat(currentUserID int) ([]structures.ChatUser, error) {
 
 	for rows.Next() {
 		var user structures.ChatUser
+		var lastMessageAt sql.NullString
 
 		err := rows.Scan(
 			&user.ID,
 			&user.Username,
+			&lastMessageAt,
 		)
 		if err != nil {
 			return nil, err

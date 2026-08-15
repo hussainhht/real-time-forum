@@ -1,6 +1,7 @@
 import { renderPage } from "../router.js";
 import { apiFetch, errorMessage } from "../api.js";
 import { getCurrentUser, setCurrentUser } from "../auth.js";
+import { connectWebsocket } from "../websocket.js";
 
 export function LoginPage(app) {
   app.innerHTML = `
@@ -71,5 +72,6 @@ async function handleLogin(event) {
 
   message.textContent = "";
   setCurrentUser(user);
+  connectWebsocket();
   renderPage("home");
 }
