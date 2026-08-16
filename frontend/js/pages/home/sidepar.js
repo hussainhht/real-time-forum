@@ -1,6 +1,37 @@
 import { escapeHtml, apiFetch, errorMessage } from "../../api.js";
 import { renderMessagePage, setupMessageForm } from "./message.js";
 
+const usersWithUnread = new Set();
+
+export function markUserUnread(userId) {
+  usersWithUnread.add(Number(userId));
+  updateUnreadBadge(userId);
+}
+
+export function clearUserUnread(userId) {
+  usersWithUnread.delete(Number(userId));
+  updateUnreadBadge(userId);
+}
+
+function updateUnreadBadge(userId) {
+  const button = document.querySelector(
+    `.chat-user-btn[data-user-id="${Number(userId)}"]`,
+  );
+  if (!button) return;
+
+  const info = button.querySelector(".chat-user-info");
+  if (!info) return;
+
+  const existingBadge = info.querySelector(".chat-user-badge-new");
+  if (usersWithUnread.has(Number(userId))) {
+    if (!existingBadge) {
+      info.insertAdjacentHTML("beforeend", '<span class="chat-user-badge-new">NEW</span>');
+    }
+  } else if (existingBadge) {
+    existingBadge.remove();
+  }
+}
+
 export function renderSidebar(users = [], selectedUserId = null) {
   return `
     <aside class="chat-sidebar">
@@ -69,7 +100,10 @@ function renderUsersList(users, usersList) {
             <button type="button" class="chat-user-btn" data-user-id="${escapeHtml(user.id)}" data-username="${escapeHtml(user.username)}" data-online="${user.online ? "true" : "false"}">
             <span class="chat-user-circle ${user.online ? "online" : "offline"}">${escapeHtml(getInitials(user))}</span>
 
-            <span class="chat-user-name">${escapeHtml(user.username)}</span>
+            <span class="chat-user-info">
+              <span class="chat-user-name">${escapeHtml(user.username)}</span>
+              ${usersWithUnread.has(Number(user.id)) ? '<span class="chat-user-badge-new">NEW</span>' : ""}
+            </span>
             </button>
         `,
     )
@@ -103,6 +137,8 @@ function setupChatUserEvents() {
         username: username,
         online: isOnline,
       };
+
+      clearUserUnread(userId);
 
       homeContainer.innerHTML = renderMessagePage(user);
 

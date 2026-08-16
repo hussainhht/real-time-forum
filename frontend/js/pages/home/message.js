@@ -61,7 +61,8 @@ export async function loadMessagesForUser(userId, beforeId = 0) {
   }
 
   const messages = Array.isArray(response.data) ? response.data : [];
-
+  //response.data should contain the []structures.Messages between these two users
+  
   if (beforeId === 0) {
     renderMessages(messages, messagesContainer);
     if (messages.length > 0) {

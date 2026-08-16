@@ -385,12 +385,31 @@ a:focus-visible {
   border-color: var(--color-danger);
 }
 
+.chat-user-info {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
 .chat-user-name {
   font-size: 0.95rem;
   font-weight: 500;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.chat-user-badge-new {
+  align-self: flex-start;
+  margin-top: 2px;
+  padding: 1px 6px;
+  border-radius: 4px;
+  background-color: rgba(85, 104, 144, 0.15);
+  color: var(--color-blue-dark);
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-shadow: 0 0 6px rgba(150, 180, 230, 0.6);
 }
 
 .chat-sidebar-footer {

@@ -1,5 +1,6 @@
 import { appendMessage } from "./pages/home/message.js";
 import { apiFetch } from "./api.js";
+import { markUserUnread } from "./pages/home/sidepar.js";
 
 export let socket;
 
@@ -147,12 +148,13 @@ function updateUserOnlineDot(userId, isOnline) {
 
 function handleIncomingMessage(message) {
   const messagesList = document.getElementById("messages-list");
-  if (!messagesList) return;
-
-  const openChatUserId = Number(messagesList.dataset.userId);
   const senderId = Number(message.sender_id);
+  const openChatUserId = messagesList ? Number(messagesList.dataset.userId) : null;
 
-  if (openChatUserId !== senderId) return;
+  if (messagesList && openChatUserId === senderId) {
+    appendMessage(message);
+    return;
+  }
 
-  appendMessage(message);
+  markUserUnread(senderId);
 }
