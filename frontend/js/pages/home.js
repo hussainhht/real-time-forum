@@ -1,4 +1,3 @@
-import { renderPage } from "../router.js";
 import { clearCurrentUser } from "../auth.js";
 import { apiFetch, errorMessage } from "../api.js";
 import { renderSidebar, updateSidebarUsers } from "../pages/home/sidepar.js";
@@ -59,7 +58,7 @@ async function handleLogout() {
   }
   disconnectWebsocket();
   clearCurrentUser();
-  renderPage("login");
+  window.location.hash = "#login";
 }
 
 export async function navigateHome(view, data = {}) {

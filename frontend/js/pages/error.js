@@ -27,7 +27,7 @@ export function renderErrorPage(app, status, message) {
   const homeButton = document.getElementById("error-home-button");
 
   homeButton.addEventListener("click", () => {
-      window.location.href = "/";
+      window.location.hash = "#home";
   });
 
 }

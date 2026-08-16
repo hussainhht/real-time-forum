@@ -1,4 +1,3 @@
-import { renderPage } from "../router.js";
 import { apiFetch, errorMessage } from "../api.js";
 import { getCurrentUser, setCurrentUser } from "../auth.js";
 import { connectWebsocket } from "../websocket.js";
@@ -37,7 +36,7 @@ export function LoginPage(app) {
   form.addEventListener("submit", handleLogin);
 
   registerButton.addEventListener("click", () => {
-    renderPage("register");
+    window.location.hash = "#register";
   });
 }
 
@@ -73,5 +72,5 @@ async function handleLogin(event) {
   message.textContent = "";
   setCurrentUser(user);
   connectWebsocket();
-  renderPage("home");
+  window.location.hash = "#home";
 }

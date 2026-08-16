@@ -1,4 +1,3 @@
-import { renderPage } from "../router.js";
 import { apiFetch, errorMessage } from "../api.js";
 
 export function RegisterPage(app) {
@@ -63,7 +62,7 @@ export function RegisterPage(app) {
   form.addEventListener("submit", handleRegister);
 
   loginButton.addEventListener("click", () => {
-    renderPage("login");
+    window.location.hash = "#login";
   });
 }
 
@@ -114,5 +113,5 @@ async function handleRegister(event) {
   }
 
   message.textContent = "Registration successful";
-  renderPage("login");
+  window.location.hash = "#login";
 }

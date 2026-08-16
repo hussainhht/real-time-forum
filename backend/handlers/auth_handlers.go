@@ -6,6 +6,7 @@ import (
 	"realtime/backend/db/queries"
 	"realtime/backend/global/structures"
 	"realtime/backend/global/utilities"
+	"regexp"
 	"strings"
 	"time"
 
@@ -35,7 +36,7 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 
 	user, err := queries.GetUserByUsernameOrEmail(loginRequest.Identifier)
 	if err != nil {
-		utilities.ErrorJSON(w, http.StatusUnauthorized, "invalid credentials")
+		utilities.ErrorJSON(w, http.StatusUnauthorized, "invalid user")
 		return
 	}
 
@@ -139,6 +140,26 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	User.Password = string(hashedPassword)
+
+	if User.Gender != "male" && User.Gender != "female" {
+		utilities.ErrorJSON(w, http.StatusBadRequest, "invalid gender")
+		return
+	}
+
+	emailRegex := regexp.MustCompile(`^[a-zA-Z0-9._%-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$`)
+	if len(User.Email) < 3 || len(User.Email) > 254 {
+		utilities.ErrorJSON(w, http.StatusBadRequest, "invalid email")
+		return
+	}
+	if !emailRegex.MatchString(User.Email) {
+		utilities.ErrorJSON(w, http.StatusBadRequest, "invalid email")
+		return
+	}
+
+	if User.Age < 0 || User.Age > 100 {
+		utilities.ErrorJSON(w, http.StatusBadRequest, "invalid age")
+		return
+	}
 
 	err = queries.InsertUser(User.Username, User.FirstName, User.LastName, User.Age, User.Gender, User.Email, User.Password)
 	if err != nil {
