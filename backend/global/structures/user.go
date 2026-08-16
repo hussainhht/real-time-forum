@@ -28,7 +28,9 @@ type Sessions struct {
 }
 
 type ChatUser struct {
-	ID       int    `json:"id"`
-	Username string `json:"username"`
-	Online   bool   `json:"online"`
+	ID        int    `json:"id"`
+	Username  string `json:"username"`
+	FirstName string `json:"first_name"`
+	LastName  string `json:"last_name"`
+	Online    bool   `json:"online"`
 }

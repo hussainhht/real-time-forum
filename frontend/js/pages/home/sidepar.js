@@ -48,6 +48,16 @@ export async function updateSidebarUsers() {
   renderUsersList(users, usersList);
 }
 
+function getInitials(user) {
+  const firstInitial = (user.first_name || "").charAt(0);
+  const lastInitial = (user.last_name || "").charAt(0);
+  const initials = `${firstInitial}${lastInitial}`;
+  if (initials) {
+    return initials.toUpperCase();
+  }
+  return (user.username || "").charAt(0).toUpperCase();
+}
+
 function renderUsersList(users, usersList) {
   if (users.length === 0) {
     usersList.innerHTML = "<p>No users found</p>";
@@ -57,7 +67,7 @@ function renderUsersList(users, usersList) {
     .map(
       (user) => `
             <button type="button" class="chat-user-btn" data-user-id="${escapeHtml(user.id)}" data-username="${escapeHtml(user.username)}" data-online="${user.online ? "true" : "false"}">
-            <span class="chat-user-circle ${user.online ? "online" : "offline"}"></span>
+            <span class="chat-user-circle ${user.online ? "online" : "offline"}">${escapeHtml(getInitials(user))}</span>
 
             <span class="chat-user-name">${escapeHtml(user.username)}</span>
             </button>

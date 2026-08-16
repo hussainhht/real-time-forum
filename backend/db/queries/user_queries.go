@@ -121,6 +121,8 @@ const get_users_for_chat = `
 SELECT
 	users.id,
 	users.username,
+	users.first_name,
+	users.last_name,
 	(
 		SELECT MAX(messages.created_at)
 		FROM messages
@@ -156,6 +158,8 @@ func GetUsersForChat(currentUserID int) ([]structures.ChatUser, error) {
 		err := rows.Scan(
 			&user.ID,
 			&user.Username,
+			&user.FirstName,
+			&user.LastName,
 			&lastMessageAt,
 		)
 		if err != nil {

@@ -361,20 +361,28 @@ a:focus-visible {
 }
 
 .chat-user-circle {
-  width: 9px;
-  height: 9px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
+  border: 2px solid transparent;
   background-color: var(--color-border);
+  color: var(--color-surface);
+  font-size: 0.7rem;
+  font-weight: 700;
   flex-shrink: 0;
 }
 
 .chat-user-circle.online {
-  background-color: var(--color-success);
+  border-color: var(--color-success);
   box-shadow: 0 0 0 3px rgba(76, 175, 125, 0.18);
 }
 
 .chat-user-circle.offline {
-  background-color: var(--color-text-faint);
+  border-color: var(--color-danger);
 }
 
 .chat-user-name {
