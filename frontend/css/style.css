@@ -818,7 +818,7 @@ a:focus-visible {
 .chat-message {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 5px;
 
   align-items: flex-start;
 
@@ -827,7 +827,7 @@ a:focus-visible {
 
   border-radius: var(--radius-md) var(--radius-md) var(--radius-md) 4px;
 
-  padding: var(--space-sm) var(--space-md) 6px;
+  padding: var(--space-sm) var(--space-md) 7px;
 
   max-width: 75%;
   align-self: flex-start;
@@ -860,7 +860,7 @@ a:focus-visible {
 .chat-message-sender {
   font-weight: 600;
   font-family: var(--font-mono);
-  font-size: 0.78rem;
+  font-size: 0.8rem;
   color: var(--color-accent-dark);
 }
 
@@ -875,7 +875,7 @@ a:focus-visible {
 
 .chat-message-content {
   margin: 0;
-  font-size: 0.95rem;
+  font-size: 1rem;
   line-height: 1.4;
   overflow-wrap: anywhere;
 }
@@ -890,7 +890,7 @@ a:focus-visible {
   margin-right: 6px;
 
   font-family: var(--font-mono);
-  font-size: 0.68rem;
+  font-size: 0.8rem;
   color: var(--color-text-faint);
   white-space: nowrap;
 }
