@@ -176,14 +176,22 @@ async function handleMessageFormSubmit(event, userId) {
     return;
   }
 
+  const MAX_MESSAGE_SIZE = 10 * 1024;
+  const body = {
+    receiver_id: userId,
+    content: content,
+  };
+
+  if (JSON.stringify(body).length > MAX_MESSAGE_SIZE) {
+    if (message) message.textContent = "Message is too large (max 10 KB)";
+    return;
+  }
+
   submitButton.disabled = true;
 
   const response = await apiFetch(`/api/messages`, {
     method: "POST",
-    body: {
-      receiver_id: userId,
-      content: content,
-    },
+    body: body,
   });
 
   submitButton.disabled = false;

@@ -48,7 +48,7 @@ func MessageHandler(w http.ResponseWriter, r *http.Request) {
 		utilities.ErrorJSON(w, http.StatusBadRequest, "you cant message your self")
 		return
 	}
-	if sendMessage.Content == "" || len(sendMessage.Content) > 1000 {
+	if sendMessage.Content == "" || len(sendMessage.Content) > 500 {
 		utilities.ErrorJSON(w, http.StatusBadRequest, "message content not valid")
 		return
 	}

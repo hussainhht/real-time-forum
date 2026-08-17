@@ -43,9 +43,17 @@ async function handleCreatePost(event) {
         return;
     }
 
+    const MAX_POST_SIZE = 10 * 1024 * 1024;
+    const body = { title, content, category };
+
+    if (JSON.stringify(body).length > MAX_POST_SIZE) {
+        message.textContent = "Post is too large (max 10 MB)";
+        return;
+    }
+
     const respons = await apiFetch("/posts", {
         method: "POST",
-        body: { title, content, category },
+        body: body,
     });
 
     if (!document.body.contains(message)) return;

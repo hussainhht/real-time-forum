@@ -141,6 +141,11 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	User.Password = string(hashedPassword)
 
+	if len(User.FirstName) > 20 || len(User.LastName) > 20 {
+		utilities.ErrorJSON(w, http.StatusBadRequest, "Name too long")
+		return
+	}
+
 	if User.Gender != "male" && User.Gender != "female" {
 		utilities.ErrorJSON(w, http.StatusBadRequest, "invalid gender")
 		return

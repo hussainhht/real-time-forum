@@ -140,9 +140,17 @@ async function handleAddComment(event, postId) {
         return;
     }
 
+    const MAX_COMMENT_SIZE = 100 * 1024;
+    const body = { content };
+
+    if (JSON.stringify(body).length > MAX_COMMENT_SIZE) {
+        message.textContent = "Comment is too large (max 100 KB)";
+        return;
+    }
+
     const result = await apiFetch(`/posts/${postId}/comments`, {
         method: "POST",
-        body: { content },
+        body: body,
     });
 
     if (!document.body.contains(message)) return;

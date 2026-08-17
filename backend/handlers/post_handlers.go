@@ -61,7 +61,7 @@ func CreatePostHandler(w http.ResponseWriter, r *http.Request) {
 		utilities.ErrorJSON(w, http.StatusBadRequest, "maximum Title reached (100 characters)")
 		return
 	}
-	if len(newPost.Content) >= 10000 {
+	if len(newPost.Content) >= 1000 {
 		utilities.ErrorJSON(w, http.StatusBadRequest, "maximum Content reached (10000 characters)")
 		return
 	}
