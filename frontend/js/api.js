@@ -10,7 +10,6 @@ export async function apiFetch(url, options = {}) {
         body = JSON.stringify(body);
         headers["Content-Type"] = "application/json";
     }
-stSizeError) return requestSizeError;
 
     let response;
     try {
