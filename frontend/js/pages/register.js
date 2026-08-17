@@ -47,6 +47,7 @@ export function RegisterPage(app) {
            placeholder="Confirm password"
            required
           />
+          <p id="register-message" class="form-message"></p>
           <button class="primary-button" type="submit">Register</button>
         </form>
         <button id="go-login" type="button" class="login-link">
@@ -54,7 +55,7 @@ export function RegisterPage(app) {
         </button>
       </section>
 
-      <p id="register-message" class="form-message"></p>
+      
     </main>
   `;
 
