@@ -42,6 +42,9 @@ export function connectWebsocket() {
       case "new_message":
         handleIncomingMessage(data.content);
         break;
+      case "new_user_registered":
+        handleNewUserRegistered(data.content);
+        break;
     }
   };
 
@@ -157,4 +160,11 @@ function handleIncomingMessage(message) {
   }
 
   markUserUnread(senderId);
+}
+
+function handleNewUserRegistered(userData) {
+  import("./pages/home/sidepar.js").then((module) => {
+    console.log("[ws] New user registered:", userData.username);
+    module.updateSidebarUsers();
+  });
 }

@@ -12,11 +12,6 @@ type Event struct {
 	Content any    `json:"content"`
 }
 
-// client wraps a websocket connection with its own write mutex.
-// gorilla/websocket only supports one concurrent writer per connection;
-// without this, SendToUser and Broadcast could write to the same conn
-// from different goroutines at the same time and corrupt the frame
-// stream (seen client-side as "Invalid frame header" / truncated JSON).
 type client struct {
 	conn    *websocket.Conn
 	writeMu sync.Mutex
@@ -99,7 +94,7 @@ func (h *Hub) Broadcast(event Event, skipUserID int) {
 	defer h.mu.RUnlock()
 
 	for userID, c := range h.clients {
-		if userID == skipUserID {
+		if skipUserID >= 0 && userID == skipUserID {
 			continue
 		}
 		if err := c.writeJSON(event); err != nil {

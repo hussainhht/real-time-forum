@@ -6,6 +6,7 @@ import (
 	"realtime/backend/db/queries"
 	"realtime/backend/global/structures"
 	"realtime/backend/global/utilities"
+	"realtime/backend/ws"
 	"regexp"
 	"strings"
 	"time"
@@ -172,6 +173,15 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 		log.Println("Error inserting user:", err) // Log the error for debugging purposes
 		return
 	}
+
+	ws.GlobalHub.Broadcast(ws.Event{
+		Type: "new_user_registered",
+		Content: map[string]any{
+			"username":   User.Username,
+			"first_name": User.FirstName,
+			"last_name":  User.LastName,
+		},
+	}, -1)
 
 	utilities.WriteJSON(w, http.StatusCreated, map[string]string{"message": "user registered successfully"})
 }
