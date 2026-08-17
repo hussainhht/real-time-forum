@@ -1,0 +1,130 @@
+/* ===== base.css ===== */
+* {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-base);
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  line-height: 1.5;
+}
+
+h1, h2, h3 {
+  margin: 0;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+p {
+  margin: 0;
+}
+
+a {
+  color: var(--color-accent);
+}
+
+::selection {
+  background: var(--color-rose);
+  color: var(--color-ink);
+}
+
+/* ---------- Form elements ---------- */
+
+input,
+select,
+textarea,
+button {
+  font-family: inherit;
+  font-size: 1rem;
+  color: var(--color-text);
+}
+
+input,
+select,
+textarea {
+  width: 100%;
+  padding: 12px var(--space-md);
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-inset);
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+  word-break: break-word;
+  overflow-wrap: break-word;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  outline: none;
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 3px rgba(85, 104, 144, 0.15);
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: var(--color-text-faint);
+}
+
+textarea {
+  font-family: inherit;
+  resize: vertical;
+}
+
+button {
+  cursor: pointer;
+  width: 100%;
+  padding: 12px var(--space-lg);
+  background-color: var(--color-surface);
+  border: none;
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-sm);
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast), background-color var(--transition-fast);
+}
+
+button:hover {
+  box-shadow: var(--shadow-md);
+}
+
+button:active {
+  transform: translateY(1px);
+}
+
+button:focus-visible,
+input:focus-visible,
+a:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+/* ---------- Primary submit buttons ---------- */
+
+#login-form button,
+#register-form button,
+#create-post-form button,
+#add-comment-form button {
+  background-color: var(--color-primary);
+  color: var(--color-ink);
+  font-weight: 600;
+}
+
+#login-form button:hover,
+#register-form button:hover,
+#create-post-form button:hover,
+#add-comment-form button:hover {
+  background-color: var(--color-primary-dark);
+}
+
+.form-message {
+  text-align: center;
+  color: var(--color-danger);
+  font-size: 0.9rem;
+  min-height: 1.2em;
+}
+

@@ -8,6 +8,17 @@ window.addEventListener("hashchange", () => {
   renderPage(page);
 });
 
+// const path = window.location.pathname;
+
+// if (path !== "/") {
+//   renderErrorPage(
+//     app,
+//     "404 Not Found",
+//     "The page you are looking for does not exist.",
+//   );
+//   return;
+// }
+
 // Initialize the application: check auth and render the first page.
 startApp().then(() => {
   const hash = window.location.hash.slice(1);

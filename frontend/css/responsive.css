@@ -1,0 +1,206 @@
+/* ===== RESPONSIVE MEDIA QUERIES ===== */
+
+/* Accessibility */
+@media (prefers-reduced-motion: reduce) {
+  .auth-backdrop::before,
+  .auth-backdrop::after,
+  .auth-orb {
+    animation: none;
+  }
+}
+
+/* ───────────────────────────────────────────────────────────────────────── */
+/* Desktop (769px and above) */
+/* ───────────────────────────────────────────────────────────────────────── */
+@media (min-width: 769px) {
+  #home-btn {
+    background-image: none;
+  }
+}
+
+/* ───────────────────────────────────────────────────────────────────────── */
+/* Tablet (521px to 768px) */
+/* ───────────────────────────────────────────────────────────────────────── */
+@media (min-width: 521px) and (max-width: 768px) {
+  .chat-sidebar {
+    width: var(--sidebar-width-md);
+  }
+
+  #home-container {
+    padding: var(--space-lg);
+  }
+
+  .home-topbar {
+    padding: var(--space-md) var(--space-lg);
+  }
+
+  .auth-page::before {
+    width: calc(100% - 28px);
+    height: calc(100% - 28px);
+    border-radius: 24px;
+  }
+
+  .auth-page::after {
+    inset: 12px;
+    border-radius: 22px;
+  }
+
+  .auth-orb--one {
+    width: 280px;
+    height: 280px;
+    top: 6%;
+    left: -12%;
+  }
+
+  .auth-orb--two {
+    width: 240px;
+    height: 240px;
+    right: -10%;
+    bottom: 12%;
+  }
+
+  .auth-card {
+    padding: var(--space-xl);
+    border-radius: var(--radius-md);
+    gap: 18px;
+  }
+
+  .name-row input {
+    min-width: 100%;
+  }
+}
+
+/* ───────────────────────────────────────────────────────────────────────── */
+/* Phone (520px and below) */
+/* ───────────────────────────────────────────────────────────────────────── */
+@media (max-width: 520px) {
+  /* Sidebar */
+  .chat-sidebar {
+    width: var(--sidebar-width-sm);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .chat-sidebar-header {
+    align-items: center;
+    padding: var(--space-md);
+  }
+
+  .chat-sidebar-header h2,
+  .chat-user-name,
+  .chat-sidebar-footer {
+    display: none;
+  }
+
+  /* Home button - logo style */
+  #home-btn {
+    width: var(--mobile-button-size);
+    height: var(--mobile-button-size);
+    padding: 0;
+    border-radius: 25px;
+    font-size: 0;
+    margin-bottom: var(--logo-button-margin);
+    background-image: url('../icon.png');
+    background-size: 60%;
+    background-position: center;
+    background-repeat: no-repeat;
+  }
+
+  /* Users list */
+  .chat-users-list {
+    width: 100%;
+    align-items: center;
+    padding: 0 var(--space-md);
+    gap: var(--space-sm);
+  }
+
+  .chat-user-btn {
+    width: 50px;
+    height: 50px;
+    padding: 4px;
+    border-radius: 50%;
+    gap: 0;
+  }
+
+  /* Topbar */
+  .topbar-user-info {
+    display: none;
+  }
+
+  /* Main content */
+  #home-container {
+    padding: var(--space-lg);
+  }
+
+  .home-topbar {
+    padding: var(--space-md) var(--space-lg);
+  }
+
+  /* Post and form pages */
+  #post-detail,
+  #create-post-form {
+    padding: var(--space-lg);
+  }
+
+  /* Messages page */
+  .message-page {
+    height: 500px;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  .message-header {
+    padding: var(--space-md);
+  }
+
+  .messages-list {
+    padding: var(--space-md);
+  }
+
+  .chat-message {
+    max-width: 92%;
+  }
+
+  .message-form {
+    padding: var(--space-sm) var(--space-md);
+  }
+
+  /* Auth pages */
+  .auth-page::before {
+    width: calc(100% - 28px);
+    height: calc(100% - 28px);
+    border-radius: 24px;
+  }
+
+  .auth-page::after {
+    inset: 12px;
+    border-radius: 22px;
+  }
+
+  .auth-orb--one {
+    width: 280px;
+    height: 280px;
+    top: 6%;
+    left: -12%;
+  }
+
+  .auth-orb--two {
+    width: 240px;
+    height: 240px;
+    right: -10%;
+    bottom: 12%;
+  }
+
+  .auth-card {
+    padding: var(--space-xl);
+    border-radius: var(--radius-md);
+    gap: 18px;
+  }
+
+  .name-row input {
+    min-width: 100%;
+  }
+}

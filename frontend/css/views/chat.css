@@ -1,0 +1,335 @@
+/* ===== chat.css ===== */
+/* =========================
+   MESSAGE PAGE
+========================= */
+
+.message-page {
+  display: flex;
+  flex-direction: column;
+
+  width: 100%;
+  height: min(85vh, 800px);
+  min-height: 0;
+
+  background-color: var(--color-surface);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+
+  overflow: hidden;
+}
+
+/* =========================
+   MESSAGE HEADER
+========================= */
+
+.message-header {
+  flex-shrink: 0;
+
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+
+  padding: var(--space-md) var(--space-xl);
+
+  border-bottom: 1px solid var(--color-border-light);
+}
+
+.message-header::before {
+  content: "";
+  flex-shrink: 0;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background-color: var(--color-accent);
+}
+
+.message-header h2 {
+  margin: 0;
+  font-size: 1.05rem;
+}
+
+.message-user-status {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+
+  color: var(--color-text-faint);
+}
+
+/* =========================
+   MESSAGES CONTAINER
+========================= */
+
+.messages-list {
+  flex: 1;
+  min-height: 0;
+
+  overflow-y: auto;
+  overflow-x: hidden;
+
+  padding: var(--space-lg);
+
+  background-color: var(--color-champagne-soft);
+
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xl);
+}
+
+/* =========================
+   EMPTY / LOADING / ERROR
+========================= */
+
+.messages-loading,
+.empty-chat,
+.chat-error {
+  color: var(--color-text-faint);
+
+  text-align: center;
+
+  font-size: 0.9rem;
+
+  margin: auto 0;
+}
+
+/* =========================
+   MESSAGE BUBBLE
+========================= */
+
+.chat-message {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+
+  align-items: flex-start;
+
+  background-color: var(--color-surface);
+  color: var(--color-text);
+
+  border-radius: var(--radius-md) var(--radius-md) var(--radius-md) 4px;
+
+  padding: var(--space-sm) var(--space-md) 7px;
+
+  max-width: 75%;
+  align-self: flex-start;
+
+  box-shadow: var(--shadow-sm);
+
+  flex-shrink: 0;
+
+  word-break: break-word;
+  overflow-wrap: break-word;
+}
+
+/* current user's own messages: sent by whoever's id matches data-current-user-id
+   on #messages-list, flipped to the right with the accent color */
+.messages-list[data-current-user-id] .chat-message[data-sender-id] {
+  align-self: flex-start;
+}
+
+.chat-message[data-own="true"] {
+  align-self: flex-end;
+  align-items: flex-end;
+
+  background-color: var(--color-accent);
+  color: var(--color-text-on-accent);
+
+  border-radius: var(--radius-md) var(--radius-md) 4px var(--radius-md);
+}
+
+/* =========================
+   MESSAGE USERNAME
+========================= */
+
+.chat-message-sender {
+  font-weight: 600;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: var(--color-accent-dark);
+}
+
+.chat-message[data-own="true"] .chat-message-sender {
+  color: var(--color-champagne-soft);
+  opacity: 0.8;
+}
+
+/* =========================
+   MESSAGE CONTENT
+========================= */
+
+.chat-message-content {
+  margin: 0;
+  font-size: 1rem;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  display: flex;
+  flex-direction: column;
+  align-items: end;
+}
+
+/* =========================
+   MESSAGE TIME
+========================= */
+
+.chat-message-timestamp {
+  float: left;
+  margin-top: 4px;
+  margin-right: 6px;
+
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: var(--color-text-faint);
+  white-space: nowrap;
+}
+
+.chat-message[data-own="true"] .chat-message-timestamp {
+  color: var(--color-champagne-soft);
+  opacity: 0.8;
+}
+
+/* =========================
+   MESSAGE FORM
+========================= */
+
+.message-form {
+  flex-shrink: 0;
+
+  display: flex;
+  align-items: center;
+
+  gap: var(--space-sm);
+
+  padding: var(--space-md) var(--space-lg);
+
+  border-top: 1px solid var(--color-border-light);
+
+  background-color: var(--color-surface);
+}
+
+.message-form input {
+  flex: 1;
+
+  min-width: 0;
+
+  border-radius: var(--radius-pill);
+
+  background-color: var(--color-champagne-soft);
+  border: none;
+  box-shadow: none;
+}
+
+.message-form input:focus {
+  box-shadow: 0 0 0 3px rgba(85, 104, 144, 0.15);
+}
+
+/* =========================
+   SEND BUTTON
+========================= */
+
+.message-form button {
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+
+  padding: 0;
+
+  border-radius: 50%;
+
+  background-color: var(--color-accent);
+
+  color: var(--color-text-on-accent);
+
+  font-size: 0;
+
+  box-shadow: none;
+
+  cursor: pointer;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.message-form button::after {
+  content: "";
+  width: 16px;
+  height: 16px;
+  background-color: currentColor;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23fff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cline x1='22' y1='2' x2='11' y2='13'%3E%3C/line%3E%3Cpolygon points='22 2 15 22 11 13 2 9 22 2'%3E%3C/polygon%3E%3C/svg%3E") no-repeat center / contain;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23fff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cline x1='22' y1='2' x2='11' y2='13'%3E%3C/line%3E%3Cpolygon points='22 2 15 22 11 13 2 9 22 2'%3E%3C/polygon%3E%3C/svg%3E") no-repeat center / contain;
+}
+
+.message-form button:hover {
+  background-color: var(--color-accent-dark);
+}
+
+.message-form button:disabled {
+  opacity: 0.6;
+
+  cursor: not-allowed;
+}
+
+/* =========================
+   FORM MESSAGE / ERROR
+========================= */
+
+.form-message {
+  flex-shrink: 0;
+
+  margin: 0;
+
+  padding: 0 var(--space-lg);
+
+  color: var(--color-text-faint);
+
+  font-size: 0.85rem;
+}
+
+/* =========================
+   SCROLLBAR
+========================= */
+
+.messages-list::-webkit-scrollbar {
+  width: 8px;
+}
+
+.messages-list::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.messages-list::-webkit-scrollbar-thumb {
+  background-color: var(--color-border-light);
+
+  border-radius: var(--radius-pill);
+}
+
+/* =========================
+   MOBILE
+========================= */
+
+@media (max-width: 520px) {
+  .message-page {
+    height: 500px;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  .message-header {
+    padding: var(--space-md);
+  }
+
+  .messages-list {
+    padding: var(--space-md);
+  }
+
+  .chat-message {
+    max-width: 92%;
+  }
+
+  .message-form {
+    padding: var(--space-sm) var(--space-md);
+  }
+}
+

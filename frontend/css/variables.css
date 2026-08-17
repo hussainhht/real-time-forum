@@ -1,0 +1,69 @@
+/* ===== variables.css ===== */
+:root {
+  /* ---------- Palette (sunset reed moodboard) ---------- */
+  --color-champagne: #feecc0;
+  --color-champagne-soft: #fbf4e4;
+  --color-rose: #f4b9b8;
+  --color-rose-dark: #e79a9a;
+  --color-blue: #556890;
+  --color-blue-dark: #414f70;
+  --color-ink: #1f2020;
+  --color-purple: #7a6c9d;
+  --color-purple-dark: #5e548e;
+  --color-purple-soft: #ede8f5;
+
+  --color-bg: var(--color-champagne-soft);
+  --color-surface: #ffffff;
+  --color-surface-sunk: #fbf3e4;
+
+  --color-primary: var(--color-rose);
+  --color-primary-dark: var(--color-rose-dark);
+  --color-accent: var(--color-blue);
+  --color-accent-dark: var(--color-blue-dark);
+
+  --color-text: var(--color-ink);
+  --color-text-muted: #6b6558;
+  --color-text-faint: #a39d8f;
+  --color-text-on-accent: #fff6e2;
+
+  --color-border: #efe2c8;
+  --color-border-light: #f5ecda;
+  --color-danger: #c1554a;
+  --color-success: #4caf7d;
+
+  /* ---------- Type ---------- */
+  --font-base: "Segoe UI", system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
+  --font-mono: "SFMono-Regular", ui-monospace, "JetBrains Mono", Consolas, "Courier New", monospace;
+
+  /* ---------- Radius (soft, never sharp) ---------- */
+  --radius-sm: 10px;
+  --radius-md: 16px;
+  --radius-lg: 22px;
+  --radius-pill: 999px;
+
+  /* ---------- Shadow (light, diffuse) ---------- */
+  --shadow-sm: 0 2px 8px rgba(31, 32, 32, 0.05);
+  --shadow-md: 0 8px 24px rgba(85, 104, 144, 0.1);
+  --shadow-lg: 0 16px 40px rgba(85, 104, 144, 0.14);
+  --shadow-inset: inset 0 0 0 1px rgba(31, 32, 32, 0.04);
+
+  /* ---------- Spacing ---------- */
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 12px;
+  --space-lg: 16px;
+  --space-xl: 24px;
+  --space-2xl: 32px;
+
+  /* ---------- Layout ---------- */
+  --sidebar-width: 280px;
+  --sidebar-width-md: 210px;
+  --sidebar-width-sm: 72px;
+  --mobile-button-size: 56px;
+  --logo-button-margin: 12px;
+
+  /* ---------- Motion ---------- */
+  --transition-fast: 0.15s ease;
+  --transition-base: 0.25s ease;
+}
+
