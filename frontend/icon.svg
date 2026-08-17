@@ -1,0 +1,81 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1248" height="1248" viewBox="0 0 1248 1248">
+  <defs>
+    <linearGradient id="purple" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#5f5180"/>
+      <stop offset="100%" stop-color="#3d315d"/>
+    </linearGradient>
+    <linearGradient id="creamWave" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#fff0cc"/>
+      <stop offset="100%" stop-color="#f3d393"/>
+    </linearGradient>
+    <linearGradient id="goldWave" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#f2bf46"/>
+      <stop offset="100%" stop-color="#ffd878"/>
+    </linearGradient>
+    <linearGradient id="hashGold" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#ffd867"/>
+      <stop offset="100%" stop-color="#e8aa2f"/>
+    </linearGradient>
+    <filter id="softShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="12" stdDeviation="18" flood-color="#000000" flood-opacity="0.18"/>
+    </filter>
+    <clipPath id="iconClip">
+      <rect x="55" y="40" width="1138" height="1138" rx="210" ry="210"/>
+    </clipPath>
+  </defs>
+
+  <rect width="1248" height="1248" fill="#ffffff"/>
+
+  <g filter="url(#softShadow)">
+    <rect x="55" y="40" width="1138" height="1138" rx="210" ry="210" fill="url(#purple)"/>
+  </g>
+
+  <g clip-path="url(#iconClip)">
+    <!-- subtle inner purple wave -->
+    <path d="M55 822
+             C 300 840, 390 1005, 640 992
+             C 860 980, 1030 900, 1193 806
+             L1193 1178 L55 1178 Z"
+          fill="#51416f" opacity="0.72"/>
+
+    <!-- gold back wave -->
+    <path d="M577 1098
+             C 760 1065, 965 960, 1193 808
+             L1193 1178
+             L760 1178
+             C 690 1150, 625 1122, 577 1098 Z"
+          fill="url(#goldWave)"/>
+
+    <!-- cream front wave -->
+    <path d="M55 824
+             C 230 842, 342 920, 470 1018
+             C 585 1106, 678 1158, 816 1178
+             L55 1178 Z"
+          fill="url(#creamWave)"/>
+
+    <!-- wave separators -->
+    <path d="M55 824
+             C 230 842, 342 920, 470 1018
+             C 585 1106, 678 1158, 816 1178"
+          fill="none" stroke="#fff7e7" stroke-width="3" opacity="0.95"/>
+    <path d="M577 1098
+             C 760 1065, 965 960, 1193 808"
+          fill="none" stroke="#ffe9aa" stroke-width="3" opacity="0.95"/>
+  </g>
+
+  <!-- Text -->
+  <g font-family="Georgia, 'Times New Roman', serif" text-anchor="middle">
+    <text x="624" y="323" font-size="70" fill="#fff5de" stroke="#8c806c" stroke-width="1">
+      real time forum
+    </text>
+    <text x="624" y="422" font-size="68" fill="#fff5de" stroke="#8c806c" stroke-width="1">
+      supported by
+    </text>
+  </g>
+
+  <!-- Brand -->
+  <g font-family="Georgia, 'Times New Roman', serif">
+    <text x="154" y="713" font-size="320" fill="url(#hashGold)" stroke="#8c6b20" stroke-width="2">#</text>
+    <text x="389" y="712" font-size="350" fill="#fff5de" stroke="#7d725f" stroke-width="2">fatali</text>
+  </g>
+</svg>

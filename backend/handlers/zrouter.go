@@ -8,8 +8,18 @@ import (
 func Router() *http.ServeMux {
 	mux := http.NewServeMux()
 
-	fileServer := http.FileServer(http.Dir("./frontend"))
-	mux.Handle("/", fileServer)
+	// mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+	// 	filePath := "./frontend" + r.URL.Path
+
+	// 	_, err := os.Stat(filePath)
+
+	// 	if err == nil {
+	// 		http.ServeFile(w, r, filePath)
+	// 		return
+	// 	}
+
+	// 	http.ServeFile(w, r, "./frontend/index.html")
+	// })
 
 	//! checking method confirming
 
@@ -38,5 +48,22 @@ func Router() *http.ServeMux {
 	// websocket
 	mux.HandleFunc("GET /ws", ws.WebSocketHandler)
 
+	// mux.Handle("/", http.FileServer(http.Dir("./frontend")))
+	mux.HandleFunc("/", serveFrontend)
+
 	return mux
+}
+
+var frontendDir = http.Dir("./frontend")
+
+func serveFrontend(w http.ResponseWriter, r *http.Request) {
+	f, err := frontendDir.Open(r.URL.Path)
+	if err != nil {
+		// doesn't exist / traversal attempt rejected -> app shell
+		http.ServeFile(w, r, "./frontend/index.html")
+		return
+	}
+	f.Close()
+
+	http.FileServer(frontendDir).ServeHTTP(w, r)
 }

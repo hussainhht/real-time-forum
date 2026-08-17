@@ -92,7 +92,7 @@
   border: none;
   border-radius: var(--radius-md);
   box-shadow: var(--shadow-sm);
-  text-align: left;
+  /* text-align: left; */
 }
 
 .chat-user-btn:hover {

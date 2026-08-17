@@ -1,4 +1,5 @@
 import { apiFetch, errorMessage } from "../api.js";
+import { renderErrorPage } from "./error.js";
 
 export function RegisterPage(app) {
   app.innerHTML = `
@@ -107,7 +108,14 @@ async function handleRegister(event) {
     body: { first_name, last_name, age, gender, email, username, password, confirm_password },
   });
 
-  if (!response.ok) {
+
+  if (response.status === 500) {
+    renderErrorPage(
+      app,
+      "505 Internal server Errror",
+      "we have problem."
+    );
+    }else if (!response.ok) {
     message.textContent = errorMessage(response, "Registration failed");
     return;
   }
