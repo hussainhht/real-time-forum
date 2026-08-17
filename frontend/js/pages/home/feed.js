@@ -1,5 +1,7 @@
 import { apiFetch, errorMessage } from "../../api.js";
 import { navigateHome } from "../home.js";
+import { renderErrorPage } from "../error.js";
+import { app } from "../../router.js";
 
 export async function renderFeedView(box) {
     box.innerHTML = `
@@ -15,6 +17,15 @@ export async function renderFeedView(box) {
 
 
     if (!document.body.contains(postsContainer)) return;
+
+    if (response.status === 500) {
+        renderErrorPage(
+            app,
+            "500 Internal Server Error",
+            "Something went wrong on our end. Please try again later."
+        );
+        return;
+    }
 
     if (!response.ok) {
         postsContainer.textContent = errorMessage(response, "Failed to load posts");

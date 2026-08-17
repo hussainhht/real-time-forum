@@ -1,5 +1,7 @@
 import { apiFetch, errorMessage } from "../../api.js";
 import { navigateHome } from "../home.js";
+import { renderErrorPage } from "../error.js";
+import { app } from "../../router.js";
 
 export function renderCreatePostView(box) {
     box.innerHTML = `
@@ -57,6 +59,15 @@ async function handleCreatePost(event) {
     });
 
     if (!document.body.contains(message)) return;
+
+    if (respons.status === 500) {
+        renderErrorPage(
+            app,
+            "500 Internal Server Error",
+            "Something went wrong on our end. Please try again later."
+        );
+        return;
+    }
 
     if (!respons.ok) {
         message.textContent = errorMessage(respons, "Failed to create post");

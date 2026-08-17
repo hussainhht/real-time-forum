@@ -1,5 +1,7 @@
 import { escapeHtml, apiFetch, errorMessage } from "../../api.js";
 import { renderMessagePage, setupMessageForm } from "./message.js";
+import { renderErrorPage } from "../error.js";
+import { app } from "../../router.js";
 
 const usersWithUnread = new Set();
 
@@ -66,6 +68,15 @@ export async function updateSidebarUsers() {
   });
 
   if (!document.body.contains(usersList)) {
+    return;
+  }
+
+  if (response.status === 500) {
+    renderErrorPage(
+      app,
+      "500 Internal Server Error",
+      "Something went wrong on our end. Please try again later."
+    );
     return;
   }
 

@@ -1,5 +1,7 @@
 import { apiFetch, errorMessage, escapeHtml } from "../../api.js";
 import { currentUser } from "../../auth.js";
+import { renderErrorPage } from "../error.js";
+import { app } from "../../router.js";
 
 let oldestMessageId = 0;
 let isLoadingOlder = false;
@@ -54,6 +56,15 @@ export async function loadMessagesForUser(userId, beforeId = 0) {
   );
 
   if (!document.body.contains(messagesContainer)) return;
+
+  if (response.status === 500) {
+    renderErrorPage(
+      app,
+      "500 Internal Server Error",
+      "Something went wrong on our end. Please try again later."
+    );
+    return;
+  }
 
   if (!response.ok) {
     messagesContainer.innerHTML = `<p class="chat-error">${errorMessage(response, "Failed to load messages")}</p>`;
@@ -197,6 +208,15 @@ async function handleMessageFormSubmit(event, userId) {
   submitButton.disabled = false;
 
   if (!document.body.contains(input)) return;
+
+  if (response.status === 500) {
+    renderErrorPage(
+      app,
+      "500 Internal Server Error",
+      "Something went wrong on our end. Please try again later."
+    );
+    return;
+  }
 
   if (!response.ok) {
     if (message)

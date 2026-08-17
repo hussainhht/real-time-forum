@@ -1,5 +1,7 @@
 import { apiFetch, errorMessage } from "../../api.js";
 import { navigateHome } from "../home.js";
+import { renderErrorPage } from "../error.js";
+import { app } from "../../router.js";
 
 export async function renderPostView(box, postId) {
     if (postId === undefined || postId === null || String(postId).trim() === "") {
@@ -24,6 +26,15 @@ export async function renderPostView(box, postId) {
     });
 
     if (!document.body.contains(detail)) return; //we do this after await because the user might have navigated away from the page while we were waiting for the response.
+
+    if (response.status === 500) {
+        renderErrorPage(
+            app,
+            "500 Internal Server Error",
+            "Something went wrong on our end. Please try again later."
+        );
+        return;
+    }
 
     if (!response.ok) {
         detail.textContent = errorMessage(response, "Failed to load post");
@@ -91,6 +102,15 @@ async function renderComments(postId) {
 
     if (!document.body.contains(list)) return;
 
+    if (response.status === 500) {
+        renderErrorPage(
+            app,
+            "500 Internal Server Error",
+            "Something went wrong on our end. Please try again later."
+        );
+        return;
+    }
+
     if (!response.ok) {
         list.innerHTML = "";
         const li = document.createElement("li");
@@ -154,6 +174,15 @@ async function handleAddComment(event, postId) {
     });
 
     if (!document.body.contains(message)) return;
+
+    if (result.status === 500) {
+        renderErrorPage(
+            app,
+            "500 Internal Server Error",
+            "Something went wrong on our end. Please try again later."
+        );
+        return;
+    }
 
     if (!result.ok) {
         message.textContent = errorMessage(result, "Failed to add comment");

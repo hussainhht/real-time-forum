@@ -1,5 +1,6 @@
 import { apiFetch, errorMessage } from "../api.js";
 import { renderErrorPage } from "./error.js";
+import { app } from "../router.js";
 
 export function RegisterPage(app) {
   app.innerHTML = `
@@ -112,10 +113,11 @@ async function handleRegister(event) {
   if (response.status === 500) {
     renderErrorPage(
       app,
-      "505 Internal server Errror",
-      "we have problem."
+      "500 Internal Server Error",
+      "Something went wrong on our end. Please try again later."
     );
-    }else if (!response.ok) {
+    return;
+  } else if (!response.ok) {
     message.textContent = errorMessage(response, "Registration failed");
     return;
   }

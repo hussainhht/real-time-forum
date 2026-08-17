@@ -6,6 +6,8 @@ import { renderFeedView } from "../pages/home/feed.js";
 import { renderCreatePostView } from "../pages/home/createPost.js";
 import { renderPostView } from "../pages/home/postView.js";
 import { disconnectWebsocket } from "../websocket.js";
+import { renderErrorPage } from "./error.js";
+import { app } from "../router.js";
 
 
 export async function homepage(app, currentUser) {
@@ -52,7 +54,14 @@ async function handleLogout() {
     method: "POST",
   });
 
-  if (!response.ok) {
+  if (response.status === 500) {
+    renderErrorPage(
+      app,
+      "500 Internal Server Error",
+      "Something went wrong on our end. Please try again later."
+    );
+    return;
+  } else if (!response.ok) {
     console.error(errorMessage(response, "Logout failed"));
     return;
   }

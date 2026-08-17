@@ -1,6 +1,8 @@
 import { apiFetch, errorMessage } from "../api.js";
 import { getCurrentUser, setCurrentUser } from "../auth.js";
 import { connectWebsocket } from "../websocket.js";
+import { renderErrorPage } from "./error.js";
+import { app } from "../router.js";
 
 export function LoginPage(app) {
   app.innerHTML = `
@@ -57,7 +59,14 @@ async function handleLogin(event) {
     body: { identifier, password },
   });
 
-  if (!response.ok) {
+  if (response.status === 500) {
+    renderErrorPage(
+      app,
+      "500 Internal Server Error",
+      "Something went wrong on our end. Please try again later."
+    );
+    return;
+  } else if (!response.ok) {
     message.textContent = errorMessage(response, "Login failed");
     return;
   }
